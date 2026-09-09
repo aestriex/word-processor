@@ -7,10 +7,12 @@ import { useDocumentStore } from './lib/document/store';
 import './index.css';
 import { matchesShortcut } from './lib/shortcuts';
 import { useAutosave } from './lib/document/useAutosave';
+import { useMenuEvents } from './lib/menu/useMenuEvents';
 
 function App() {
   useConfigPersistence();
   useAutosave();
+  useMenuEvents();
 
   const theme = useConfigStore((s) => s.config.theme);
 

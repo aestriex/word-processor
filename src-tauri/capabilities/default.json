@@ -63,6 +63,7 @@
         { "path": "$APPDATA/**" }
       ]
     },
-    "dialog:default"
+    "dialog:default",
+    "core:window:allow-close"
   ]
 }
