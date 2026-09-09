@@ -4,15 +4,22 @@ on:
   issues:
     types: [closed]
 
+permissions:
+  issues: write
+
 jobs:
   check-dependents:
     runs-on: ubuntu-latest
     steps:
       - name: Auto-queue ready-to-code Issues
         uses: actions/github-script@v7
+        env:
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
         with:
-          github-token: ${{ secrets.PROJECT_TOKEN }}
           script: |
+            const { getOctokit } = require("@actions/github");
+            const projectGithub = getOctokit(process.env.PROJECT_TOKEN);
+
             const PROJECT_ID = "PVT_kwHOBA-F8s4Bi5H2";
             const STATUS_FIELD_ID = "PVTSSF_lAHOBA-F8s4Bi5H2zhhvgpE";
             const NEXT_UP_OPTION_ID = "0a9b64b0";
@@ -20,13 +27,12 @@ jobs:
 
             const closedIssueNumber = context.payload.issue.number;
 
-            // 1. Get all open issues in the repo
+            // 1. Get all open issues in the repo (default token — posts/reads as github-actions[bot])
             const openIssues = await github.paginate(
               github.rest.issues.listForRepo,
               { owner: context.repo.owner, repo: context.repo.repo, state: "open", per_page: 100 }
             );
 
-            // 2. Filter to ones with a "## Depends on" checklist mentioning the closed issue
             const dependsOnRegex = /## Depends on\s*([\s\S]*?)(\n##|$)/i;
             const taskRegex = /- \[([ x])\] #(\d+)/g;
 
@@ -41,7 +47,6 @@ jobs:
               const dependsOnClosedIssue = tasks.some(t => Number(t[2]) === closedIssueNumber);
               if (!dependsOnClosedIssue) continue;
 
-              // 3. Check if ALL referenced issues are now closed
               const allDepsClosed = await Promise.all(
                 tasks.map(async (t) => {
                   const depNum = Number(t[2]);
@@ -57,8 +62,8 @@ jobs:
 
               if (!allDepsClosed.every(Boolean)) continue;
 
-              // 4. Find this issue's Project item + current status
-              const itemQuery = await github.graphql(`
+              // Project item lookup + mutation — PROJECT_TOKEN required here
+              const itemQuery = await projectGithub.graphql(`
                 query($owner: String!, $repo: String!, $issueNumber: Int!) {
                   repository(owner: $owner, name: $repo) {
                     issue(number: $issueNumber) {
@@ -97,8 +102,7 @@ jobs:
                 continue;
               }
 
-              // 5. Move to "Next Up"
-              await github.graphql(`
+              await projectGithub.graphql(`
                 mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
                   updateProjectV2ItemFieldValue(input: {
                     projectId: $projectId,
