@@ -11,14 +11,12 @@ jobs:
   check-dependents:
     runs-on: ubuntu-latest
     steps:
-      - name: Auto-queue ready-to-code Issues
+      - name: Auto-queue ready-to-code issues
         uses: actions/github-script@v7
         env:
           PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
         with:
           script: |
-            const projectGithub = github.getOctokit(process.env.PROJECT_TOKEN);
-
             const PROJECT_ID = "PVT_kwHOBA-F8s4Bi5H2";
             const STATUS_FIELD_ID = "PVTSSF_lAHOBA-F8s4Bi5H2zhhvgpE";
             const NEXT_UP_OPTION_ID = "0a9b64b0";
@@ -26,7 +24,25 @@ jobs:
 
             const closedIssueNumber = context.payload.issue.number;
 
-            // 1. Get all open issues in the repo (default token — posts/reads as github-actions[bot])
+            // Raw GraphQL call authenticated with the PROJECT_TOKEN PAT,
+            // used only for Projects v2 (default token can't access it).
+            async function projectGraphQL(query, variables) {
+              const res = await fetch("https://api.github.com/graphql", {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${process.env.PROJECT_TOKEN}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ query, variables }),
+              });
+              const json = await res.json();
+              if (json.errors) {
+                throw new Error(`GraphQL error: ${JSON.stringify(json.errors)}`);
+              }
+              return json.data;
+            }
+
+            // 1. Get all open issues (default token — bot identity)
             const openIssues = await github.paginate(
               github.rest.issues.listForRepo,
               { owner: context.repo.owner, repo: context.repo.repo, state: "open", per_page: 100 }
@@ -61,8 +77,7 @@ jobs:
 
               if (!allDepsClosed.every(Boolean)) continue;
 
-              // Project item lookup + mutation — PROJECT_TOKEN required here
-              const itemQuery = await projectGithub.graphql(`
+              const itemQuery = await projectGraphQL(`
                 query($owner: String!, $repo: String!, $issueNumber: Int!) {
                   repository(owner: $owner, name: $repo) {
                     issue(number: $issueNumber) {
@@ -101,7 +116,7 @@ jobs:
                 continue;
               }
 
-              await projectGithub.graphql(`
+              await projectGraphQL(`
                 mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
                   updateProjectV2ItemFieldValue(input: {
                     projectId: $projectId,
