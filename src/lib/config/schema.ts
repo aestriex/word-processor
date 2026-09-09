@@ -8,7 +8,12 @@ export const ConfigSchema = z.object({
     defaultFontSize: z.number().default(16),
   }).default({
     defaultFontFamily: 'system-ui',
-    defaultFontSize: 16
+    defaultFontSize: 16,
+  }),
+  keybindings: z.object({
+    save: z.string().default('ctrl+s'),
+  }).default({
+    save: 'ctrl+s',
   }),
 });
 
