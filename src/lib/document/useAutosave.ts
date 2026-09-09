@@ -22,7 +22,7 @@ export function useAutosave() {
 
       if (filePath) {
         await saveDocument(editor, filePath);
-        await clearRecoveryCopy();
+        await clearRecoveryCopy(filePath);
         useDocumentStore.setState({ isDirty: false });
       }
     }, intervalMs);

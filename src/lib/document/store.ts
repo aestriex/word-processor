@@ -33,17 +33,17 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       return;
     }
     await saveDocument(editor, filePath);
-    await clearRecoveryCopy();
+    await clearRecoveryCopy(filePath);
     set({ isDirty: false });
   },
 
   saveAs: async () => {
-    const { editor } = get();
+    const { editor, filePath: oldPath } = get();
     if (!editor) return;
-    const path = await saveDocumentAs(editor);
-    if (path) {
-      await clearRecoveryCopy();
-      set({ filePath: path, isDirty: false });
+    const newPath = await saveDocumentAs(editor);
+    if (newPath) {
+      await clearRecoveryCopy(oldPath);
+      set({ filePath: newPath, isDirty: false });
     }
   },
 
