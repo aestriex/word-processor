@@ -17,8 +17,7 @@ jobs:
           PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
         with:
           script: |
-            const { getOctokit } = require("@actions/github");
-            const projectGithub = getOctokit(process.env.PROJECT_TOKEN);
+            const projectGithub = github.getOctokit(process.env.PROJECT_TOKEN);
 
             const PROJECT_ID = "PVT_kwHOBA-F8s4Bi5H2";
             const STATUS_FIELD_ID = "PVTSSF_lAHOBA-F8s4Bi5H2zhhvgpE";
