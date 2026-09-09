@@ -1,4 +1,3 @@
-import { useConfigStore } from '../../lib/config/store';
 import { useDocumentStore } from '../../lib/document/store';
 
 export function TopBar() {
