@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Editor } from '@tiptap/core';
 import { saveDocument, saveDocumentAs, openDocument } from './fileOperations';
+import { message } from '@tauri-apps/plugin-dialog';
 
 interface DocumentStore {
   editor: Editor | null;
@@ -46,7 +47,10 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       const path = await openDocument(editor);
       if (path) set({ filePath: path, isDirty: false });
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to open document');
+      await message(err instanceof Error ? err.message : 'Failed to open document', {
+        title: 'Error',
+        kind: 'error',
+      });
     }
   },
 }));
