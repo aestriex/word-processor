@@ -1,9 +1,15 @@
 import { save, open } from '@tauri-apps/plugin-dialog';
-import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
+import { readTextFile, writeTextFile, rename } from '@tauri-apps/plugin-fs';
 import type { Editor } from '@tiptap/core';
 import { DocumentFileSchema, CURRENT_DOCUMENT_VERSION, type DocumentFile } from './schema';
 
 const FILE_FILTERS = [{ name: 'Word Processor Document', extensions: ['wpdoc'] }];
+
+async function writeDocumentAtomic(filePath: string, file: DocumentFile): Promise<void> {
+  const tempPath = `${filePath}.tmp`;
+  await writeTextFile(tempPath, JSON.stringify(file, null, 2));
+  await rename(tempPath, filePath);
+}
 
 export async function saveDocument(editor: Editor, filePath: string): Promise<void> {
   const file: DocumentFile = {
@@ -11,12 +17,12 @@ export async function saveDocument(editor: Editor, filePath: string): Promise<vo
     docJSON: editor.getJSON(),
     metadata: { modifiedAt: new Date().toISOString() },
   };
-  await writeTextFile(filePath, JSON.stringify(file, null, 2));
+  await writeDocumentAtomic(filePath, file);
 }
 
 export async function saveDocumentAs(editor: Editor): Promise<string | null> {
   const path = await save({ filters: FILE_FILTERS, defaultPath: 'Untitled.wpdoc' });
-  if (!path) return null; // user cancelled the dialog
+  if (!path) return null;
   await saveDocument(editor, path);
   return path;
 }
@@ -26,7 +32,7 @@ export async function openDocument(editor: Editor): Promise<string | null> {
   if (!path || Array.isArray(path)) return null;
 
   const raw = await readTextFile(path);
-  const parsed = JSON.parse(raw); // intentionally NOT try/caught — see note above
+  const parsed = JSON.parse(raw);
   const result = DocumentFileSchema.safeParse(parsed);
 
   if (!result.success) {
