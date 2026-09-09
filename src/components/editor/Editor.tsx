@@ -12,7 +12,7 @@ export function Editor() {
       <div className="mx-auto max-w-3xl p-4">
         <EditorContent
           editor={editor}
-          className="prose prose-neutral dark:prose-invert min-h-[400px] focus:outline-none"
+          className="prose prose-neutral dark:prose-invert min-h-100 focus:outline-none"
         />
       </div>
     </div>
