@@ -1,3 +1,4 @@
+import { useConfigStore } from '../../lib/config/store';
 import { useDocumentStore } from '../../lib/document/store';
 
 export function TopBar() {
@@ -7,6 +8,9 @@ export function TopBar() {
   const saveAs = useDocumentStore((s) => s.saveAs);
   const openFile = useDocumentStore((s) => s.openFile);
 
+  const theme = useConfigStore((s) => s.config.theme);
+  const setTheme = useConfigStore((s) => s.setTheme);
+
   return (
     <div className="flex items-center gap-2 border-b border-border px-4 py-2 text-sm">
       <button onClick={openFile}>Open</button>
@@ -15,6 +19,13 @@ export function TopBar() {
       <span className="ml-auto text-muted">
         {filePath ?? 'Untitled'}{isDirty ? ' •' : ''}
       </span>
+      <button
+        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        className="rounded px-2 py-1 hover:bg-border"
+        aria-label="Toggle dark mode"
+      >
+        {theme === 'dark' ? '☀️' : '🌙'}
+      </button>
     </div>
   );
 }
