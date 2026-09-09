@@ -9,6 +9,7 @@ import { matchesShortcut } from './lib/shortcuts';
 import { useAutosave } from './lib/document/useAutosave';
 import { useMenuEvents } from './lib/menu/useMenuEvents';
 import { FormattingToolbar } from './components/toolbar/FormattingToolbar';
+import { StatusBar } from './components/layout/StatusBar';
 
 function App() {
   useConfigPersistence();
@@ -38,6 +39,7 @@ function App() {
         <div className="flex-1 overflow-auto">
           <Editor />
         </div>
+        <StatusBar />
       </main>
     </div>
   );
