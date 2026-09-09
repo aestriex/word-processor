@@ -2,11 +2,13 @@ import { create } from 'zustand';
 import type { Editor } from '@tiptap/core';
 import { saveDocument, saveDocumentAs, openDocument } from './fileOperations';
 import { message } from '@tauri-apps/plugin-dialog';
+import { clearRecoveryCopy } from './recovery';
 
 interface DocumentStore {
   editor: Editor | null;
   filePath: string | null;
   isDirty: boolean;
+  revision: number;
   setEditor: (editor: Editor | null) => void;
   markDirty: () => void;
   save: () => Promise<void>;
@@ -18,9 +20,10 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
   editor: null,
   filePath: null,
   isDirty: false,
+  revision: 0,
 
   setEditor: (editor) => set({ editor }),
-  markDirty: () => set({ isDirty: true }),
+  markDirty: () => set((state) => ({ isDirty: true, revision: state.revision + 1 })),
 
   save: async () => {
     const { editor, filePath } = get();
@@ -30,6 +33,7 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       return;
     }
     await saveDocument(editor, filePath);
+    await clearRecoveryCopy();
     set({ isDirty: false });
   },
 
@@ -37,7 +41,10 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
     const { editor } = get();
     if (!editor) return;
     const path = await saveDocumentAs(editor);
-    if (path) set({ filePath: path, isDirty: false });
+    if (path) {
+      await clearRecoveryCopy();
+      set({ filePath: path, isDirty: false });
+    }
   },
 
   openFile: async () => {

@@ -6,9 +6,12 @@ import { useConfigPersistence } from './lib/config/useConfigPersistence';
 import { useDocumentStore } from './lib/document/store';
 import './index.css';
 import { matchesShortcut } from './lib/shortcuts';
+import { useAutosave } from './lib/document/useAutosave';
 
 function App() {
   useConfigPersistence();
+  useAutosave();
+
   const theme = useConfigStore((s) => s.config.theme);
 
   const saveShortcut = useConfigStore((s) => s.config.keybindings.save);

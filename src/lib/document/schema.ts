@@ -9,6 +9,7 @@ export const DocumentFileSchema = z.object({
     title: z.string().optional(),
     createdAt: z.string().optional(),
     modifiedAt: z.string().optional(),
+    originalPath: z.string().optional(),
   }).default({}),
 });
 
