@@ -8,6 +8,7 @@ import './index.css';
 import { matchesShortcut } from './lib/shortcuts';
 import { useAutosave } from './lib/document/useAutosave';
 import { useMenuEvents } from './lib/menu/useMenuEvents';
+import { FormattingToolbar } from './components/toolbar/FormattingToolbar';
 
 function App() {
   useConfigPersistence();
@@ -33,6 +34,7 @@ function App() {
     <div className={theme === 'dark' ? 'dark' : ''}>
       <main className="flex h-screen flex-col bg-background text-foreground">
         <TopBar />
+        <FormattingToolbar />
         <div className="flex-1 overflow-auto">
           <Editor />
         </div>
