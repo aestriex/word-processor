@@ -10,7 +10,17 @@ export const DocumentFileSchema = z.object({
     createdAt: z.string().optional(),
     modifiedAt: z.string().optional(),
     originalPath: z.string().optional(),
+    pageSetup: z.object({
+      pageSize: z.string(),
+      margins: z.object({
+        top: z.number(),
+        bottom: z.number(),
+        left: z.number(),
+        right: z.number(),
+      }),
+      pageGap: z.number(),
+    }).optional(),
   }).default({}),
 });
 
-export type DocumentFile = z.infer<typeof DocumentFileSchema>
+export type DocumentFile = z.infer<typeof DocumentFileSchema>;
