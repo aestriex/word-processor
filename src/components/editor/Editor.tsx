@@ -1,16 +1,19 @@
 import { useEffect } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
 import { TextStyle, FontSize } from '@tiptap/extension-text-style';
 import FontFamily from '@tiptap/extension-font-family';
 import { Color } from '@tiptap/extension-color';
 import { useDocumentStore } from '../../lib/document/store';
 import { useConfigStore } from '../../lib/config/store';
+import { PaginationExtension } from '../../lib/pagination/PaginationExtension';
+import { PageBreakNode } from '../../lib/pagination/PageBreakNode';
+import { PaginatedEditor } from './PaginatedEditor';
 
 export function Editor() {
   const setEditor = useDocumentStore((s) => s.setEditor);
   const markDirty = useDocumentStore((s) => s.markDirty);
+  const pageSetup = useDocumentStore((s) => s.pageSetup);
 
   const defaultFontFamily = useConfigStore((s) => s.config.editor.defaultFontFamily);
   const defaultFontSize = useConfigStore((s) => s.config.editor.defaultFontSize);
@@ -18,11 +21,16 @@ export function Editor() {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Underline,
       TextStyle,
       FontFamily,
       Color,
       FontSize,
+      PageBreakNode,
+      PaginationExtension.configure({
+        pageGap: pageSetup.pageGap,
+        marginTop: pageSetup.margins.top,
+        marginBottom: pageSetup.margins.bottom,
+      }),
     ],
     content: '<p>Start typing…</p>',
     onUpdate: () => markDirty(),
@@ -34,12 +42,13 @@ export function Editor() {
   }, [editor, setEditor]);
 
   return (
-    <div className="mx-auto max-w-3xl p-4">
-      <EditorContent
-        editor={editor}
-        className="prose prose-neutral dark:prose-invert min-h-100 focus:outline-none"
-        style={{ fontFamily: defaultFontFamily, fontSize: `${defaultFontSize}px` }}
-      />
-    </div>
+    <PaginatedEditor
+      editor={editor}
+      pageSizeKey={pageSetup.pageSize}
+      fontFamily={defaultFontFamily}
+      fontSize={defaultFontSize}
+      margins={pageSetup.margins}
+      pageGap={pageSetup.pageGap}
+    />
   );
 }

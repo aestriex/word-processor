@@ -17,6 +17,7 @@ export const SHORTCUTS: ShortcutDefinition[] = [
   { id: 'strike', label: 'Strikethrough', keys: 'ctrl+shift+s', source: 'hardcoded' },
   { id: 'undo', label: 'Undo', keys: 'ctrl+z', source: 'hardcoded' },
   { id: 'redo', label: 'Redo', keys: 'ctrl+y', source: 'hardcoded' },
+  { id: 'insertPageBreak', label: 'Insert Page Break', keys: 'ctrl+enter', source: 'hardcoded' },
 ];
 
 export function matchesShortcut(e: KeyboardEvent, shortcut: string): boolean {

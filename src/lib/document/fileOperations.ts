@@ -2,6 +2,7 @@ import { save, open } from '@tauri-apps/plugin-dialog';
 import { readTextFile, writeTextFile, rename } from '@tauri-apps/plugin-fs';
 import type { Editor } from '@tiptap/core';
 import { DocumentFileSchema, CURRENT_DOCUMENT_VERSION, type DocumentFile } from './schema';
+import type { PageSetup } from '../pagination/constants';
 
 const FILE_FILTERS = [{ name: 'Word Processor Document', extensions: ['wpdoc'] }];
 
@@ -11,23 +12,31 @@ async function writeDocumentAtomic(filePath: string, file: DocumentFile): Promis
   await rename(tempPath, filePath);
 }
 
-export async function saveDocument(editor: Editor, filePath: string): Promise<void> {
+export async function saveDocument(editor: Editor, filePath: string, pageSetup: PageSetup): Promise<void> {
   const file: DocumentFile = {
     version: CURRENT_DOCUMENT_VERSION,
     docJSON: editor.getJSON(),
-    metadata: { modifiedAt: new Date().toISOString() },
+    metadata: {
+      modifiedAt: new Date().toISOString(),
+      pageSetup,
+    },
   };
   await writeDocumentAtomic(filePath, file);
 }
 
-export async function saveDocumentAs(editor: Editor): Promise<string | null> {
+export async function saveDocumentAs(editor: Editor, pageSetup: PageSetup): Promise<string | null> {
   const path = await save({ filters: FILE_FILTERS, defaultPath: 'Untitled.wpdoc' });
   if (!path) return null;
-  await saveDocument(editor, path);
+  await saveDocument(editor, path, pageSetup);
   return path;
 }
 
-export async function openDocument(editor: Editor): Promise<string | null> {
+export interface OpenDocumentResult {
+  path: string;
+  pageSetup: PageSetup | null;
+}
+
+export async function openDocument(editor: Editor): Promise<OpenDocumentResult | null> {
   const path = await open({ filters: FILE_FILTERS, multiple: false });
   if (!path || Array.isArray(path)) return null;
 
@@ -40,5 +49,5 @@ export async function openDocument(editor: Editor): Promise<string | null> {
   }
 
   editor.commands.setContent(result.data.docJSON);
-  return path;
+  return { path, pageSetup: result.data.metadata.pageSetup ?? null };
 }
