@@ -10,6 +10,7 @@ import { useAutosave } from './lib/document/useAutosave';
 import { useMenuEvents } from './lib/menu/useMenuEvents';
 import { FormattingToolbar } from './components/toolbar/FormattingToolbar';
 import { StatusBar } from './components/layout/StatusBar';
+import { Button } from './components/ui/button';
 
 function App() {
   useConfigPersistence();
@@ -38,6 +39,13 @@ function App() {
         <FormattingToolbar />
         <div className="flex-1 overflow-auto">
           <Editor />
+        </div>
+
+        <div className="flex gap-2 p-4">
+          <Button>Default</Button>
+          <Button variant="outline">Outline</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="ghost">Ghost</Button>
         </div>
         <StatusBar />
       </main>
