@@ -16,6 +16,8 @@ export const ConfigSchema = z.object({
       left: z.number(),
       right: z.number(),
     }).default(DEFAULT_MARGINS),
+    colorDisplayFormat: z.enum(['hex', 'rgb', 'hsl']).default('hex'),
+    customColors: z.array(z.string()).default([]),
   }).default({
     defaultFontFamily: 'system-ui',
     defaultFontSize: 16,
@@ -23,6 +25,8 @@ export const ConfigSchema = z.object({
     defaultPageSize: 'Letter',
     defaultPageGap: PAGE_GAP,
     defaultMargins: DEFAULT_MARGINS,
+    colorDisplayFormat: 'hex',
+    customColors: [],
   }),
   keybindings: z.object({
     save: z.string().default('ctrl+s'),

@@ -124,11 +124,13 @@ export function SelectionOverlay({
       setRects(clipped);
     }
 
-    editor.on('selectionUpdate', updateOverlay);
-    return () => {
-      editor.off('selectionUpdate', updateOverlay);
-    };
-  }, [editor, containerRef, pageOffsets, pageHeight, marginTop, marginBottom]);
+    currentEditor.on('selectionUpdate', updateOverlay);
+      currentEditor.on('update', updateOverlay);
+      return () => {
+        currentEditor.off('selectionUpdate', updateOverlay);
+        currentEditor.off('update', updateOverlay);
+      };
+    }, [editor, containerRef, pageOffsets, pageHeight, marginTop, marginBottom]);
 
   return (
     <div className="pointer-events-none absolute inset-0 z-20">

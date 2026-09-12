@@ -4,6 +4,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { TextStyle, FontSize } from '@tiptap/extension-text-style';
 import FontFamily from '@tiptap/extension-font-family';
 import { Color } from '@tiptap/extension-color';
+import { Highlight } from '@tiptap/extension-highlight'
 import { useDocumentStore } from '../../lib/document/store';
 import { useConfigStore } from '../../lib/config/store';
 import { PaginationExtension } from '../../lib/pagination/PaginationExtension';
@@ -24,6 +25,7 @@ export function Editor() {
       TextStyle,
       FontFamily,
       Color,
+      Highlight.configure({ multicolor: true }),
       FontSize,
       PageBreakNode,
       PaginationExtension.configure({

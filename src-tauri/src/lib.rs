@@ -16,13 +16,8 @@ pub fn run() {
                 MenuItem::with_id(handle, "menu-open", "Open", true, Some("CmdOrCtrl+O"))?;
             let save_item =
                 MenuItem::with_id(handle, "menu-save", "Save", true, Some("CmdOrCtrl+S"))?;
-            let save_as_item = MenuItem::with_id(
-                handle,
-                "menu-save-as",
-                "Save As…",
-                true,
-                Some("CmdOrCtrl+Shift+S"),
-            )?;
+            let save_as_item =
+                MenuItem::with_id(handle, "menu-save-as", "Save As…", true, None::<&str>)?;
             let quit_item =
                 MenuItem::with_id(handle, "menu-quit", "Quit", true, Some("CmdOrCtrl+Q"))?;
 
