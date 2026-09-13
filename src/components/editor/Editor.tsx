@@ -15,7 +15,7 @@ import {
   OrderedListWithStyle,
   UnorderedListWithStyle,
 } from "@/lib/lists/listExtensions";
-import { ParagraphWithLineHeight, HeadingWithLineHeight, LineHeightCommands } from "@/lib/editor/LineHeightExtension";
+import { HeadingWithExtras, ParagraphExtraCommands, ParagraphWithExtras } from "@/lib/editor/ParagraphExtensions";
 
 export function Editor() {
   const setEditor = useDocumentStore((s) => s.setEditor);
@@ -45,9 +45,9 @@ export function Editor() {
       Highlight.configure({ multicolor: true }),
       FontSize,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
-      ParagraphWithLineHeight,
-      HeadingWithLineHeight,
-      LineHeightCommands,
+      ParagraphWithExtras,
+      HeadingWithExtras,
+      ParagraphExtraCommands,
       PageBreakNode,
       PaginationExtension.configure({
         pageGap: pageSetup.pageGap,

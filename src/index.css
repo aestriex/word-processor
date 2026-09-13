@@ -129,6 +129,10 @@
   line-height: 1.6;
 }
 
+.ProseMirror strong {
+  color: currentColor !important;
+}
+
 /* Page break styling */
 .page-break-marker {
   height: 1px;

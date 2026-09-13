@@ -12,6 +12,7 @@ import { RibbonIconButton } from '../RibbonIconButton';
 import { useDocumentStore } from '@/lib/document/store';
 import { ListStyleButton } from '../ListStyleButton';
 import { LineSpacingButton } from '../LineSpacingButton';
+import { IndentButtons } from '../IndentButtons';
 
 export function ParagraphGroup() {
   const editor = useDocumentStore((s) => s.editor);
@@ -94,6 +95,8 @@ export function ParagraphGroup() {
           { value: 'upper-roman', label: 'Uppercase Roman', sample: 'I.' },
         ]}
       />
+
+      <IndentButtons editor={editor}/>
     </RibbonGroup>
   );
 }
