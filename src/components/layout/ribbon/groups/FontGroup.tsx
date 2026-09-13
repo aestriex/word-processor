@@ -13,12 +13,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RibbonGroup } from "../RibbonGroup";
-import { RibbonIconButton } from "./RibbonIconButton";
+import { RibbonGroup } from "../../RibbonGroup";
+import { RibbonIconButton } from "../RibbonIconButton";
 import { useDocumentStore } from "@/lib/document/store";
-import { FontSizeInput } from "./FontSizeInput";
+import { FontSizeInput } from "../FontSizeInput";
 import { useConfigStore } from "@/lib/config/store";
-import { ColorPickerButton } from "./ColorPickerButton";
+import { ColorPickerButton } from "../ColorPickerButton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const FONT_FAMILIES = [
@@ -67,7 +67,7 @@ export function FontGroup() {
               <Tooltip>
                 <TooltipTrigger
                   render={
-                    <SelectTrigger className="h-8 w-32 text-sm">
+                    <SelectTrigger className="mx-1.5 h-8 w-32 text-sm">
                       <SelectValue placeholder="Font" />
                     </SelectTrigger>
                   }

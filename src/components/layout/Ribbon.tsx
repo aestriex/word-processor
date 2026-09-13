@@ -9,8 +9,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDocumentStore } from "@/lib/document/store";
 import { FileText } from "lucide-react";
-import { FontGroup } from "./ribbon/FontGroup";
+import { FontGroup } from "./ribbon/groups/FontGroup";
 import { TooltipProvider } from "../ui/tooltip";
+import { ParagraphGroup } from "./ribbon/groups/ParagraphGroup";
+import { HistoryGroup } from "./ribbon/groups/HistoryGroup";
 
 const RIBBON_TABS = ["Home", "Insert", "Layout", "Review", "View"] as const;
 type RibbonTab = (typeof RIBBON_TABS)[number];
@@ -81,7 +83,9 @@ export function Ribbon() {
 
         <TabsContent value="Home" className="m-0 h-14 flex-none px-3">
           <div className="flex h-full items-center">
+            <HistoryGroup />
             <FontGroup />
+            <ParagraphGroup />
           </div>
         </TabsContent>
       </Tabs>

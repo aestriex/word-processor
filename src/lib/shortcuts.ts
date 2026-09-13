@@ -18,6 +18,15 @@ export const SHORTCUTS: ShortcutDefinition[] = [
   { id: 'undo', label: 'Undo', keys: 'ctrl+z', source: 'hardcoded' },
   { id: 'redo', label: 'Redo', keys: 'ctrl+y', source: 'hardcoded' },
   { id: 'insertPageBreak', label: 'Insert Page Break', keys: 'ctrl+enter', source: 'hardcoded' },
+
+  // Paragraph Alignment
+
+  { id: 'alignLeft', label: 'Align Left', keys: 'ctrl+shift+l', source: 'hardcoded' },
+  { id: 'alignCenter', label: 'Align Center', keys: 'ctrl+shift+e', source: 'hardcoded' },
+  { id: 'alignRight', label: 'Align Right', keys: 'ctrl+shift+r', source: 'hardcoded' },
+  { id: 'alignJustify', label: 'Justify', keys: 'ctrl+shift+j', source: 'hardcoded' },
+  { id: 'unorderedList', label: 'Bullet List', keys: 'ctrl+shift+8', source: 'hardcoded' },
+  { id: 'orderedList', label: 'Numbered List', keys: 'ctrl+shift+7', source: 'hardcoded' },
 ];
 
 export function matchesShortcut(e: KeyboardEvent, shortcut: string): boolean {

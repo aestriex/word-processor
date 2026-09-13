@@ -124,6 +124,11 @@
   background: transparent;
 }
 
+.ProseMirror li,
+.ProseMirror li p {
+  line-height: 1.6;
+}
+
 /* Page break styling */
 .page-break-marker {
   height: 1px;

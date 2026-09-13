@@ -1,32 +1,53 @@
-import { useEffect } from 'react';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { TextStyle, FontSize } from '@tiptap/extension-text-style';
-import FontFamily from '@tiptap/extension-font-family';
-import { Color } from '@tiptap/extension-color';
-import { Highlight } from '@tiptap/extension-highlight'
-import { useDocumentStore } from '../../lib/document/store';
-import { useConfigStore } from '../../lib/config/store';
-import { PaginationExtension } from '../../lib/pagination/PaginationExtension';
-import { PageBreakNode } from '../../lib/pagination/PageBreakNode';
-import { PaginatedEditor } from './PaginatedEditor';
+import { useEffect } from "react";
+import { useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { TextStyle, FontSize } from "@tiptap/extension-text-style";
+import FontFamily from "@tiptap/extension-font-family";
+import { Color } from "@tiptap/extension-color";
+import { Highlight } from "@tiptap/extension-highlight";
+import { TextAlign } from "@tiptap/extension-text-align";
+import { useDocumentStore } from "../../lib/document/store";
+import { useConfigStore } from "../../lib/config/store";
+import { PaginationExtension } from "../../lib/pagination/PaginationExtension";
+import { PageBreakNode } from "../../lib/pagination/PageBreakNode";
+import { PaginatedEditor } from "./PaginatedEditor";
+import {
+  OrderedListWithStyle,
+  UnorderedListWithStyle,
+} from "@/lib/lists/listExtensions";
+import { ParagraphWithLineHeight, HeadingWithLineHeight, LineHeightCommands } from "@/lib/editor/LineHeightExtension";
 
 export function Editor() {
   const setEditor = useDocumentStore((s) => s.setEditor);
   const markDirty = useDocumentStore((s) => s.markDirty);
   const pageSetup = useDocumentStore((s) => s.pageSetup);
 
-  const defaultFontFamily = useConfigStore((s) => s.config.editor.defaultFontFamily);
-  const defaultFontSize = useConfigStore((s) => s.config.editor.defaultFontSize);
+  const defaultFontFamily = useConfigStore(
+    (s) => s.config.editor.defaultFontFamily,
+  );
+  const defaultFontSize = useConfigStore(
+    (s) => s.config.editor.defaultFontSize,
+  );
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        bulletList: false,
+        orderedList: false,
+        paragraph: false,
+        heading: false,
+      }),
+      OrderedListWithStyle,
+      UnorderedListWithStyle,
       TextStyle,
       FontFamily,
       Color,
       Highlight.configure({ multicolor: true }),
       FontSize,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      ParagraphWithLineHeight,
+      HeadingWithLineHeight,
+      LineHeightCommands,
       PageBreakNode,
       PaginationExtension.configure({
         pageGap: pageSetup.pageGap,
@@ -34,7 +55,7 @@ export function Editor() {
         marginBottom: pageSetup.margins.bottom,
       }),
     ],
-    content: '<p>Start typing…</p>',
+    content: "<p>Start typing…</p>",
     onUpdate: () => markDirty(),
   });
 
