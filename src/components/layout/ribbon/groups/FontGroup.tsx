@@ -20,7 +20,6 @@ import { FontSizeInput } from "../FontSizeInput";
 import { useConfigStore } from "@/lib/config/store";
 import { ColorPickerButton } from "../ColorPickerButton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ClearFormattingButton } from "../ClearFormattingButton";
 
 const FONT_FAMILIES = [
   "Arial",
@@ -141,8 +140,6 @@ export function FontGroup() {
         onClick={() => editor.chain().focus().toggleStrike().run()}
         shortcutId="strike"
       />
-
-      <ClearFormattingButton editor={editor}/>
     </RibbonGroup>
   );
 }

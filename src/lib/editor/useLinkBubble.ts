@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Editor } from '@tiptap/core';
 
 export interface LinkBubbleState {
@@ -9,14 +9,17 @@ export interface LinkBubbleState {
   coords: { left: number; top: number };
 }
 
-export function useLinkBubble(editor: Editor | null) {
+export function useLinkBubble(editor: Editor | null, bubbleElRef: React.RefObject<HTMLElement | null>) {
   const [bubble, setBubble] = useState<LinkBubbleState | null>(null);
+  const pinnedRef = useRef(false);
 
   useEffect(() => {
     if (!editor) return;
-    const currentEditor = editor; // narrowed, provably non-null from here on
+    const currentEditor = editor;
 
     function updateBubble() {
+      if (pinnedRef.current) return;
+
       const { state } = currentEditor;
       const { from } = state.selection;
       const marks = state.doc.resolve(from).marks();
@@ -53,13 +56,22 @@ export function useLinkBubble(editor: Editor | null) {
       });
     }
 
+    function handlePointerDown(e: PointerEvent) {
+      const bubbleEl = bubbleElRef.current;
+      const target = e.target as Node;
+      pinnedRef.current = !!(bubbleEl && bubbleEl.contains(target));
+    }
+
     currentEditor.on('selectionUpdate', updateBubble);
     currentEditor.on('update', updateBubble);
+    document.addEventListener('pointerdown', handlePointerDown, true);
+
     return () => {
       currentEditor.off('selectionUpdate', updateBubble);
       currentEditor.off('update', updateBubble);
+      document.removeEventListener('pointerdown', handlePointerDown, true);
     };
-  }, [editor]);
+  }, [editor, bubbleElRef]);
 
   return bubble;
 }

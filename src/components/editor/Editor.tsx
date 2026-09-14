@@ -37,6 +37,7 @@ export function Editor() {
         orderedList: false,
         paragraph: false,
         heading: false,
+        link: false,
       }),
       OrderedListWithStyle,
       UnorderedListWithStyle,

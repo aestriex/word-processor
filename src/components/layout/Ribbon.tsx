@@ -13,6 +13,8 @@ import { FontGroup } from "./ribbon/groups/FontGroup";
 import { TooltipProvider } from "../ui/tooltip";
 import { ParagraphGroup } from "./ribbon/groups/ParagraphGroup";
 import { HistoryGroup } from "./ribbon/groups/HistoryGroup";
+import { StylesGroup } from "./ribbon/groups/StylesGroup";
+import { ActionsGroup } from "./ribbon/groups/ActionsGroup";
 
 const RIBBON_TABS = ["Home", "Insert", "Layout", "Review", "View"] as const;
 type RibbonTab = (typeof RIBBON_TABS)[number];
@@ -26,6 +28,9 @@ export function Ribbon() {
   const openFile = useDocumentStore((s) => s.openFile);
 
   const displayName = filePath ? filePath.split("/").pop() : "Untitled";
+
+  const editor = useDocumentStore((s) => s.editor);
+  if (!editor) return null;
 
   return (
     <TooltipProvider delay={300} closeDelay={0}>
@@ -84,8 +89,10 @@ export function Ribbon() {
         <TabsContent value="Home" className="m-0 h-14 flex-none px-3">
           <div className="flex h-full items-center">
             <HistoryGroup />
+            <StylesGroup editor={editor} />
             <FontGroup />
             <ParagraphGroup />
+            <ActionsGroup editor={editor}  />
           </div>
         </TabsContent>
       </Tabs>
