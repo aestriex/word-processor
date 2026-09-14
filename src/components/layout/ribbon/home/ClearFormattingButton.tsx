@@ -1,6 +1,6 @@
 import { RemoveFormatting } from 'lucide-react';
-import { RibbonIconButton } from './RibbonIconButton';
 import type { Editor } from '@tiptap/core';
+import { RibbonIconButton } from '../RibbonIconButton';
 
 export function ClearFormattingButton({ editor }: { editor: Editor }) {
   function clearFormatting() {

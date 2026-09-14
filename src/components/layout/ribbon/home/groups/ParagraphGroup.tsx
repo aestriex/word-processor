@@ -7,8 +7,8 @@ import {
   List,
   ListOrdered,
 } from 'lucide-react';
-import { RibbonGroup } from '../../RibbonGroup';
-import { RibbonIconButton } from '../RibbonIconButton';
+import { RibbonGroup } from '../../../RibbonGroup';
+import { RibbonIconButton } from '../../RibbonIconButton';
 import { useDocumentStore } from '@/lib/document/store';
 import { ListStyleButton } from '../ListStyleButton';
 import { LineSpacingButton } from '../LineSpacingButton';

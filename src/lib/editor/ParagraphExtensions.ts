@@ -41,12 +41,33 @@ const indentAttribute = {
   },
 };
 
+const directionalIndentAttributes = {
+  indentLeft: {
+    default: 0,
+    parseHTML: (element: HTMLElement) => parseInt(element.style.paddingLeft || '0', 10),
+    renderHTML: (attributes: { indentLeft?: number }) => {
+      if (!attributes.indentLeft) return {};
+      return { style: `padding-left: ${attributes.indentLeft}px` };
+    },
+  },
+  indentRight: {
+    default: 0,
+    parseHTML: (element: HTMLElement) => parseInt(element.style.paddingRight || '0', 10),
+    renderHTML: (attributes: { indentRight?: number }) => {
+      if (!attributes.indentRight) return {};
+      return { style: `padding-right: ${attributes.indentRight}px` };
+    },
+  },
+};
+
 export const ParagraphWithExtras = Paragraph.extend({
   addAttributes() {
     return {
       ...this.parent?.(),
       ...lineHeightAttribute,
       ...indentAttribute,
+      ...directionalIndentAttributes,
+      ...spacingAttributes,
     };
   },
 });
@@ -59,6 +80,25 @@ export const HeadingWithExtras = Heading.extend({
     };
   },
 });
+
+const spacingAttributes = {
+  spaceBefore: {
+    default: 0,
+    parseHTML: (element: HTMLElement) => parseInt(element.style.marginTop || '0', 10),
+    renderHTML: (attributes: { spaceBefore?: number }) => {
+      if (!attributes.spaceBefore) return {};
+      return { style: `margin-top: ${attributes.spaceBefore}px` };
+    },
+  },
+  spaceAfter: {
+    default: 0,
+    parseHTML: (element: HTMLElement) => parseInt(element.style.marginBottom || '0', 10),
+    renderHTML: (attributes: { spaceAfter?: number }) => {
+      if (!attributes.spaceAfter) return {};
+      return { style: `margin-bottom: ${attributes.spaceAfter}px` };
+    },
+  },
+};
 
 export const ParagraphExtraCommands = Extension.create({
   name: 'paragraphExtraCommands',

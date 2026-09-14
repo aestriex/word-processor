@@ -9,20 +9,29 @@ interface RibbonIconButtonProps {
   label: string;
   icon: ReactNode;
   active?: boolean;
+  disabled?: boolean;
   onClick: () => void;
   shortcutId?: string;
 }
 
-export function RibbonIconButton({ label, icon, active, onClick, shortcutId }: RibbonIconButtonProps) {
+export function RibbonIconButton({ label, icon, active, disabled, onClick, shortcutId }: RibbonIconButtonProps) {
   const shortcut = shortcutId ? useShortcutDisplay(shortcutId) : null;
 
   return (
     <Tooltip>
       <TooltipTrigger
         render={
-          <Button variant={active ? 'secondary' : 'ghost'} size="icon-sm" onClick={onClick} aria-label={label}>
-            {icon}
-          </Button>
+          <span className="inline-flex">
+            <Button
+              variant={active ? 'secondary' : 'ghost'}
+              size="icon-sm"
+              onClick={onClick}
+              disabled={disabled}
+              aria-label={label}
+            >
+              {icon}
+            </Button>
+          </span>
         }
       />
       <TooltipContent className="flex items-center gap-2">

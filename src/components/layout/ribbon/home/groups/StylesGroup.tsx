@@ -1,5 +1,5 @@
 import type { Editor } from '@tiptap/core';
-import { RibbonGroup } from '../../RibbonGroup';
+import { RibbonGroup } from '../../../RibbonGroup';
 import { StylesDropdown } from '../StylesDropdown';
 
 export function StylesGroup({ editor }: { editor: Editor }) {

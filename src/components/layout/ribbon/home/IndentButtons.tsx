@@ -1,5 +1,5 @@
 import { IndentIncrease, IndentDecrease } from 'lucide-react';
-import { RibbonIconButton } from './RibbonIconButton';
+import { RibbonIconButton } from '../RibbonIconButton';
 import type { Editor } from '@tiptap/core';
 
 export function IndentButtons({ editor }: { editor: Editor }) {

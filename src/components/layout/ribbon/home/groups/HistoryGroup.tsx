@@ -1,7 +1,7 @@
 import { Undo2, Redo2 } from 'lucide-react';
 import { useDocumentStore } from '@/lib/document/store';
-import { RibbonGroup } from '../../RibbonGroup';
-import { RibbonIconButton } from '../RibbonIconButton';
+import { RibbonGroup } from '../../../RibbonGroup';
+import { RibbonIconButton } from '../../RibbonIconButton';
 
 export function HistoryGroup() {
   const editor = useDocumentStore((s) => s.editor);

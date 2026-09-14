@@ -9,12 +9,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDocumentStore } from "@/lib/document/store";
 import { FileText } from "lucide-react";
-import { FontGroup } from "./ribbon/groups/FontGroup";
+import { FontGroup } from "./ribbon/home/groups/FontGroup";
 import { TooltipProvider } from "../ui/tooltip";
-import { ParagraphGroup } from "./ribbon/groups/ParagraphGroup";
-import { HistoryGroup } from "./ribbon/groups/HistoryGroup";
-import { StylesGroup } from "./ribbon/groups/StylesGroup";
-import { ActionsGroup } from "./ribbon/groups/ActionsGroup";
+import { ParagraphGroup } from "./ribbon/home/groups/ParagraphGroup";
+import { HistoryGroup } from "./ribbon/home/groups/HistoryGroup";
+import { StylesGroup } from "./ribbon/home/groups/StylesGroup";
+import { ActionsGroup } from "./ribbon/home/groups/ActionsGroup";
+import { PagesGroup } from "./ribbon/insert/groups/PagesGroup";
+import { IllustrationsGroup } from "./ribbon/insert/groups/IllustrationsGroup";
+import { ReferenceTablesGroup } from "./ribbon/insert/groups/ReferenceTablesGroup";
+import { TextGroup } from "./ribbon/insert/groups/TextGroup";
+import { PageSetupGroup } from "./ribbon/layout/groups/PageSetupGroup";
+import { ParagraphSpacingGroup } from "./ribbon/layout/groups/SpacingGroup";
+import { ArrangeGroup } from "./ribbon/layout/groups/ArrangeGroup";
+import { BreaksGroup } from "./ribbon/insert/groups/BreaksGroup";
 
 const RIBBON_TABS = ["Home", "Insert", "Layout", "Review", "View"] as const;
 type RibbonTab = (typeof RIBBON_TABS)[number];
@@ -93,6 +101,24 @@ export function Ribbon() {
             <FontGroup />
             <ParagraphGroup />
             <ActionsGroup editor={editor}  />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="Insert" className="m-0 h-14 flex-none px-3">
+          <div className="flex h-full items-center">
+            <PagesGroup editor={editor} />
+            <IllustrationsGroup editor={editor} />
+            <ReferenceTablesGroup />
+            <BreaksGroup editor={editor} />
+            <TextGroup editor={editor} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="Layout" className="m-0 h-14 flex-none px-3">
+          <div className="flex h-full items-center">
+            <PageSetupGroup />
+            <ParagraphSpacingGroup editor={editor} />
+            <ArrangeGroup />
           </div>
         </TabsContent>
       </Tabs>

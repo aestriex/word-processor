@@ -7,7 +7,7 @@ import { RibbonIconButton } from './RibbonIconButton';
 import { COLOR_ROWS, GRAYSCALE_ROW } from '@/lib/colorPalette';
 import { useConfigStore } from '@/lib/config/store';
 import { formatColor } from '@/lib/colorFormat';
-import { ColorPicker } from './ColorPicker';
+import { ColorPicker } from '../../ui/color-picker';
 
 interface ColorPickerButtonProps {
   label: string;
