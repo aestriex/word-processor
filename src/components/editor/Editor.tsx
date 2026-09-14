@@ -16,6 +16,7 @@ import {
   UnorderedListWithStyle,
 } from "@/lib/lists/listExtensions";
 import { HeadingWithExtras, ParagraphExtraCommands, ParagraphWithExtras } from "@/lib/editor/ParagraphExtensions";
+import Link from "@tiptap/extension-link";
 
 export function Editor() {
   const setEditor = useDocumentStore((s) => s.setEditor);
@@ -48,6 +49,10 @@ export function Editor() {
       ParagraphWithExtras,
       HeadingWithExtras,
       ParagraphExtraCommands,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: { target: null, rel: 'noopener noreferrer nofollow' },
+      }),
       PageBreakNode,
       PaginationExtension.configure({
         pageGap: pageSetup.pageGap,
@@ -57,7 +62,66 @@ export function Editor() {
     ],
     content: "<p>Start typing…</p>",
     onUpdate: () => markDirty(),
+    editorProps: {
+      handleClick: (_view, _pos, event) => {
+        const target = event.target as HTMLElement;
+        const link = target.closest('a');
+        if (link) {
+          event.preventDefault();
+          return true;
+        }
+        return false;
+      },
+    },
   });
+
+  useEffect(() => {
+    if (!editor) return;
+    const currentEditor = editor;
+    const dom = currentEditor.view.dom;
+
+    let downPos: { x: number; y: number } | null = null;
+    let isLinkMouseDown = false;
+
+    function handleMouseDown(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a');
+      isLinkMouseDown = !!link && e.detail === 1 && e.button === 0;
+      downPos = isLinkMouseDown ? { x: e.clientX, y: e.clientY } : null;
+    }
+
+    function handleMouseUp(e: MouseEvent) {
+      if (!isLinkMouseDown || !downPos) return;
+
+      const movedDistance = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
+      const wasDrag = movedDistance > 4;
+
+      if (!wasDrag) {
+        const pos = currentEditor.view.posAtCoords({ left: e.clientX, top: e.clientY });
+        if (pos) {
+          currentEditor.commands.focus();
+          currentEditor.commands.setTextSelection(pos.pos);
+        }
+      }
+
+      isLinkMouseDown = false;
+      downPos = null;
+    }
+
+    function preventLinkNav(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (target.closest('a')) e.preventDefault();
+    }
+
+    dom.addEventListener('mousedown', handleMouseDown, true);
+    dom.addEventListener('mouseup', handleMouseUp, true);
+    dom.addEventListener('click', preventLinkNav, true);
+    return () => {
+      dom.removeEventListener('mousedown', handleMouseDown, true);
+      dom.removeEventListener('mouseup', handleMouseUp, true);
+      dom.removeEventListener('click', preventLinkNav, true);
+    };
+  }, [editor]);
 
   useEffect(() => {
     setEditor(editor);

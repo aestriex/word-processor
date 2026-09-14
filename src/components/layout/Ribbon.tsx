@@ -64,7 +64,7 @@ export function Ribbon() {
                   <TabsTrigger
                     key={tab}
                     value={tab}
-                    className="h-10 flex-none rounded-none border-0 px-3 text-sm hover:bg-muted/50 data-active:hover:bg-muted/50 group-data-horizontal/tabs:after:bottom-0 group-data-horizontal/tabs:after:h-[2px] after:bg-muted-foreground hover:after:opacity-100 data-active:after:bg-foreground"
+                    className="h-10 flex-none rounded-none border-0 px-3 text-sm hover:bg-muted/50 data-active:hover:bg-muted/50 group-data-horizontal/tabs:after:bottom-0 group-data-horizontal/tabs:after:h-0.5 after:bg-muted-foreground hover:after:opacity-100 data-active:after:bg-foreground"
                   >
                     {tab}
                   </TabsTrigger>

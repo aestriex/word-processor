@@ -3,6 +3,8 @@ import { EditorContent, type Editor } from '@tiptap/react';
 import { usePagination } from '../../lib/pagination/usePagination';
 import { PAGE_SIZES, FALLBACK_PAGE_SIZE } from '../../lib/pagination/constants';
 import { SelectionOverlay } from './SelectionOverlay';
+import { useLinkBubble } from '@/lib/editor/useLinkBubble';
+import { LinkBubble } from './LinkBubble';
 
 interface Margins {
   top: number;
@@ -66,6 +68,7 @@ function handleContainerClick(
 export function PaginatedEditor({ editor, pageSizeKey, fontFamily, fontSize, margins }: PaginatedEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pageOffsets = usePagination(editor, pageSizeKey, margins, containerRef);
+  const linkBubble = useLinkBubble(editor);
   const { width, height } = PAGE_SIZES[pageSizeKey] ?? PAGE_SIZES[FALLBACK_PAGE_SIZE];
 
   return (
@@ -109,6 +112,15 @@ export function PaginatedEditor({ editor, pageSizeKey, fontFamily, fontSize, mar
         marginTop={margins.top}
         marginBottom={margins.bottom}
       />
+
+      {linkBubble && editor && containerRef.current && (
+        <LinkBubble
+          editor={editor}
+          bubble={linkBubble}
+          containerTop={containerRef.current.getBoundingClientRect().top}
+          containerLeft={containerRef.current.getBoundingClientRect().left}
+        />
+      )}
     </div>
   );
 }

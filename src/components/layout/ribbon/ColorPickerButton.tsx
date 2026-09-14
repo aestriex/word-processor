@@ -91,7 +91,7 @@ export function ColorPickerButton({
           <div className="flex flex-col items-center">
             {icon}
             <div
-              className="h-[3px] w-4 rounded-sm border border-border/50"
+              className="h-0.75 w-4 rounded-sm border border-border/50"
               style={{ backgroundColor: lastPicked ?? 'transparent' }}
             />
           </div>

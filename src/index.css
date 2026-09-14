@@ -133,6 +133,16 @@
   color: currentColor !important;
 }
 
+.ProseMirror a {
+  color: var(--tw-prose-links, var(--primary));
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ProseMirror a[style*="color"] {
+  color: inherit;
+}
+
 /* Page break styling */
 .page-break-marker {
   height: 1px;

@@ -71,7 +71,7 @@ export function FontSizeInput({ editor, currentSize }: FontSizeInputProps) {
           onClick={() => step(1)}
           tabIndex={-1}
         >
-          <ChevronUp size={10} className="translate-y-[1px]" />
+          <ChevronUp size={10} className="translate-y-px" />
         </Button>
         <Button
           variant="ghost"
@@ -80,7 +80,7 @@ export function FontSizeInput({ editor, currentSize }: FontSizeInputProps) {
           onClick={() => step(-1)}
           tabIndex={-1}
         >
-          <ChevronDown size={10} className="-translate-y-[1px]" />
+          <ChevronDown size={10} className="-translate-y-px" />
         </Button>
       </div>
     </div>

@@ -13,6 +13,7 @@ import { useDocumentStore } from '@/lib/document/store';
 import { ListStyleButton } from '../ListStyleButton';
 import { LineSpacingButton } from '../LineSpacingButton';
 import { IndentButtons } from '../IndentButtons';
+import { LinkButton } from '../LinkButton';
 
 export function ParagraphGroup() {
   const editor = useDocumentStore((s) => s.editor);
@@ -96,7 +97,9 @@ export function ParagraphGroup() {
         ]}
       />
 
-      <IndentButtons editor={editor}/>
+      <IndentButtons editor={editor} />
+
+      <LinkButton editor={editor} />
     </RibbonGroup>
   );
 }
