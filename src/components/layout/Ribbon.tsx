@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDocumentStore } from "@/lib/document/store";
-import { FileText } from "lucide-react";
 import { FontGroup } from "./ribbon/home/groups/FontGroup";
 import { TooltipProvider } from "../ui/tooltip";
 import { ParagraphGroup } from "./ribbon/home/groups/ParagraphGroup";
@@ -23,6 +22,12 @@ import { PageSetupGroup } from "./ribbon/layout/groups/PageSetupGroup";
 import { ParagraphSpacingGroup } from "./ribbon/layout/groups/SpacingGroup";
 import { ArrangeGroup } from "./ribbon/layout/groups/ArrangeGroup";
 import { BreaksGroup } from "./ribbon/insert/groups/BreaksGroup";
+import { TensorLogo } from "../icons/TensorIcon";
+import { ProofingGroup } from "./ribbon/review/groups/ProofingGroup";
+import { AccessibilityGroup } from "./ribbon/review/groups/AccessibilityGroup";
+import { SearchGroup } from "./ribbon/review/groups/SearchGroup";
+import { TrackingGroup } from "./ribbon/review/groups/TrackingGroup";
+import { DisplayGroup } from "./ribbon/review/groups/DisplayGroup";
 
 const RIBBON_TABS = ["Home", "Insert", "Layout", "Review", "View"] as const;
 type RibbonTab = (typeof RIBBON_TABS)[number];
@@ -56,9 +61,10 @@ export function Ribbon() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-10 flex-none rounded-none px-3 text-primary hover:text-primary"
+                      className="h-10 flex-none rounded-none px-3 text-primary text-sm hover:text-primary"
                     >
-                      <FileText size={16} />
+                      <TensorLogo size={16} />
+                      Tensor
                     </Button>
                   }
                 />
@@ -119,6 +125,16 @@ export function Ribbon() {
             <PageSetupGroup />
             <ParagraphSpacingGroup editor={editor} />
             <ArrangeGroup />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="Review" className="m-0 h-14 flex-none px-3">
+          <div className="flex h-full items-center">
+            <ProofingGroup />
+            <AccessibilityGroup />
+            <SearchGroup />
+            <TrackingGroup />
+            <DisplayGroup />
           </div>
         </TabsContent>
       </Tabs>

@@ -6,6 +6,7 @@ import { SelectionOverlay } from "./SelectionOverlay";
 import { useLinkBubble } from "@/lib/editor/useLinkBubble";
 import { LinkBubble } from "./LinkBubble";
 import { TooltipProvider } from "../ui/tooltip";
+import { useConfigStore } from "@/lib/config/store";
 
 interface Margins {
   top: number;
@@ -33,7 +34,7 @@ function handleContainerClick(
   margins: Margins,
 ) {
   if (!editor || !containerEl) return;
-  if (!editor.state.selection.empty) return; // don't disturb a real drag-selection
+  if (!editor.state.selection.empty) return;
 
   const target = e.target as HTMLElement;
   if (target.closest('[data-link-bubble]')) return;
@@ -42,16 +43,12 @@ function handleContainerClick(
   const localX = e.clientX - rect.left;
   const localY = e.clientY - rect.top;
 
-  // Which page was actually clicked, based on the same offsets driving the
-  // visible page rectangles — not a raw, page-agnostic screen position.
   let pageIndex = 0;
   for (let i = 0; i < pageOffsets.length; i++) {
     if (pageOffsets[i] <= localY) pageIndex = i;
   }
   const pageTop = pageOffsets[pageIndex];
 
-  // Clamp the click into that page's real content box, so posAtCoords is
-  // never asked to search outside this page's actual text.
   const clampedY = Math.min(
     Math.max(localY, pageTop + margins.top),
     pageTop + pageHeight - margins.bottom - 1,
@@ -83,6 +80,7 @@ export function PaginatedEditor({
   const pageOffsets = usePagination(editor, pageSizeKey, margins, containerRef);
   const linkBubbleRef = useRef<HTMLDivElement>(null);
   const linkBubble = useLinkBubble(editor, linkBubbleRef);
+  const showNonPrintingChars = useConfigStore((s) => s.config.editor.showNonPrintingChars);
   const { width, height } =
     PAGE_SIZES[pageSizeKey] ?? PAGE_SIZES[FALLBACK_PAGE_SIZE];
 
@@ -117,7 +115,7 @@ export function PaginatedEditor({
         ))}
 
         <div
-          className="relative z-10"
+          className={`relative z-10 ${showNonPrintingChars ? "show-non-printing" : ""}`}
           style={{
             paddingTop: `${margins.top}px`,
             paddingBottom: `${margins.bottom}px`,

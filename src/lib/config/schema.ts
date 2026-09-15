@@ -19,6 +19,7 @@ export const ConfigSchema = z.object({
     colorDisplayFormat: z.enum(['hex', 'rgb', 'hsl']).default('hex'),
     customColors: z.array(z.string()).default([]),
     fetchLinkMetadata: z.boolean().default(true), // Will be defaulted to "false" when user setting UI is implemented; left as "true" for testing purposes only
+    showNonPrintingChars: z.boolean().default(false),
   }).default({
     defaultFontFamily: 'system-ui',
     defaultFontSize: 16,
@@ -29,6 +30,7 @@ export const ConfigSchema = z.object({
     colorDisplayFormat: 'hex',
     customColors: [],
     fetchLinkMetadata: true,
+    showNonPrintingChars: false
   }),
   keybindings: z.object({
     save: z.string().default('ctrl+s'),

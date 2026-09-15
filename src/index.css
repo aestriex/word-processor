@@ -85,26 +85,12 @@
   outline: none;
 }
 
-/*
- * Pagination page-break helpers. Kept as plain, unlayered rules (not inside a
- * Tailwind @layer) with !important: these classes are applied by
- * PaginationExtension via ProseMirror decorations and must always win over
- * @tailwindcss/typography's prose margins, which would otherwise render in
- * full once the spacer breaks sibling-margin collapsing between paragraphs.
- */
 .page-break-spacer {
   display: block;
   width: 100%;
   user-select: none;
 }
 
-/*
- * user-select:none keeps the spacer out of copied text, but some engines still
- * paint a "gap-fill" selection highlight over a fully-selected empty block
- * regardless of selectability. Force its selection background transparent too
- * so a selection spanning a mid-paragraph page break doesn't show a solid blue
- * rectangle over the blank gap.
- */
 .page-break-spacer::selection {
   background: transparent;
 }
@@ -143,7 +129,6 @@
   color: inherit;
 }
 
-/* Page break styling */
 .page-break-marker {
   height: 1px;
   margin: 1.5rem 0;
@@ -162,9 +147,13 @@
   color: #94a3b8;
 }
 
-/*
- ---break---
- */
+.show-non-printing p::after {
+  content: '¶';
+  color: theme(colors.muted-foreground);
+  opacity: 0.5;
+  margin-left: 2px;
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: 'Geist Variable', sans-serif;
