@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { EditorContent, type Editor } from "@tiptap/react";
 import { usePagination } from "../../lib/pagination/usePagination";
 import { PAGE_SIZES, FALLBACK_PAGE_SIZE } from "../../lib/pagination/constants";
@@ -7,6 +7,7 @@ import { useLinkBubble } from "@/lib/editor/useLinkBubble";
 import { LinkBubble } from "./LinkBubble";
 import { TooltipProvider } from "../ui/tooltip";
 import { useConfigStore } from "@/lib/config/store";
+import { useDocumentStore } from "@/lib/document/store";
 
 interface Margins {
   top: number;
@@ -84,6 +85,12 @@ export function PaginatedEditor({
   const zoomLevel = useConfigStore((s) => s.config.editor.zoomLevel);
   const { width, height } =
     PAGE_SIZES[pageSizeKey] ?? PAGE_SIZES[FALLBACK_PAGE_SIZE];
+
+  const setPageInfo = useDocumentStore((s) => s.setPageInfo)
+
+  useEffect(() => {
+    setPageInfo(pageOffsets.length, 1); // currentPage tracking deferred
+  }, [pageOffsets, setPageInfo]);
 
   return (
     <TooltipProvider>

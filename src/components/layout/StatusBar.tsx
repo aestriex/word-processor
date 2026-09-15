@@ -5,6 +5,7 @@ import { getDocumentStats, getCursorPosition, type DocumentStats, type CursorPos
 
 export function StatusBar() {
   const editor = useDocumentStore((s) => s.editor);
+  const pageCount = useDocumentStore((s) => s.pageCount);
 
   const cursor = useEditorState<CursorPosition | null>({
     editor,
@@ -31,11 +32,11 @@ export function StatusBar() {
   if (!editor) return null;
 
   return (
-    <div className="flex items-center gap-4 border-t border-border px-4 py-1 text-xs text-muted">
+    <div className="flex h-7 items-center gap-4 border-t border-border bg-card px-4 text-xs text-muted-foreground">
       <span>{stats.words} words</span>
       <span>{stats.characters} characters</span>
-      <span>{stats.charactersWithSpaces} characters (whitespace)</span>
-      <span className="ml-auto">
+      <span className="ml-auto">Page {pageCount === 1 ? '1 of 1' : `1 of ${pageCount}`}</span>
+      <span>
         Ln {cursor?.line ?? 1}, Col {cursor?.column ?? 1}
       </span>
     </div>

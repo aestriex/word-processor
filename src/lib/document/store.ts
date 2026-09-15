@@ -27,6 +27,9 @@ interface DocumentStore {
   save: () => Promise<void>;
   saveAs: () => Promise<void>;
   openFile: () => Promise<void>;
+  pageCount: number;
+  currentPage: number;
+  setPageInfo: (pageCount: number, currentPage: number) => void;
 }
 
 export const useDocumentStore = create<DocumentStore>((set, get) => ({
@@ -35,6 +38,9 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
   isDirty: false,
   revision: 0,
   pageSetup: defaultPageSetup(),
+  pageCount: 1,
+  currentPage: 1,
+  setPageInfo: (pageCount, currentPage) => set({ pageCount, currentPage }),
 
   setEditor: (editor) => set({ editor }),
   markDirty: () => set((state) => ({ isDirty: true, revision: state.revision + 1 })),
