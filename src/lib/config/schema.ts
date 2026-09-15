@@ -4,6 +4,7 @@ import { PAGE_GAP, DEFAULT_MARGINS } from '../pagination/constants';
 export const ConfigSchema = z.object({
   theme: z.enum(['light', 'dark']).default('light'),
   autosaveIntervalMs: z.number().default(5000),
+  useFloatingToolbar: z.boolean().default(true),
   editor: z.object({
     defaultFontFamily: z.string().default('system-ui'),
     defaultFontSize: z.number().default(16),

@@ -33,6 +33,7 @@ import { ZoomGroup } from "./ribbon/view/groups/ZoomGroup";
 import { ShowGroup } from "./ribbon/view/groups/ShowGroup";
 import { ModeGroup } from "./ribbon/view/groups/ModeGroup";
 import { WindowGroup } from "./ribbon/view/groups/WindowGroup";
+import { useConfigStore } from "@/lib/config/store";
 
 const RIBBON_TABS = ["Home", "Insert", "Layout", "Review", "View"] as const;
 type RibbonTab = (typeof RIBBON_TABS)[number];
@@ -44,6 +45,8 @@ export function Ribbon() {
   const save = useDocumentStore((s) => s.save);
   const saveAs = useDocumentStore((s) => s.saveAs);
   const openFile = useDocumentStore((s) => s.openFile);
+
+  const showFloatingToolbar = useConfigStore((s) => s.config.useFloatingToolbar);
 
   const displayName = filePath ? filePath.split("/").pop() : "Untitled";
 
@@ -111,7 +114,7 @@ export function Ribbon() {
             <StylesGroup editor={editor} />
             <FontGroup />
             <ParagraphGroup />
-            <ActionsGroup editor={editor}  />
+            {!showFloatingToolbar && <ActionsGroup editor={editor} />}
           </div>
         </TabsContent>
 

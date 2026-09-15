@@ -8,7 +8,7 @@ import {
   ListOrdered,
 } from 'lucide-react';
 import { RibbonGroup } from '../../../RibbonGroup';
-import { RibbonIconButton } from '../../RibbonIconButton';
+import { IconButton } from '../../../IconButton';
 import { useDocumentStore } from '@/lib/document/store';
 import { ListStyleButton } from '../ListStyleButton';
 import { LineSpacingButton } from '../LineSpacingButton';
@@ -32,8 +32,8 @@ export function ParagraphGroup() {
   if (!editor) return null;
 
   return (
-    <RibbonGroup>
-      <RibbonIconButton
+    <RibbonGroup showSeparator={false} >
+      <IconButton
         label="Align Left"
         icon={<AlignLeft size={16} />}
         active={attrs?.isLeft}
@@ -41,7 +41,7 @@ export function ParagraphGroup() {
         shortcutId='alignLeft'
       />
 
-      <RibbonIconButton
+      <IconButton
         label="Align Center"
         icon={<AlignCenter size={16} />}
         active={attrs?.isCenter}
@@ -49,7 +49,7 @@ export function ParagraphGroup() {
         shortcutId='alignCenter'
       />
 
-      <RibbonIconButton
+      <IconButton
         label="Align Right"
         icon={<AlignRight size={16} />}
         active={attrs?.isRight}
@@ -57,7 +57,7 @@ export function ParagraphGroup() {
         shortcutId='alignRight'
       />
 
-      <RibbonIconButton
+      <IconButton
         label="Justify"
         icon={<AlignJustify size={16} />}
         active={attrs?.isJustify}

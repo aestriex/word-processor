@@ -18,7 +18,7 @@ export const SHORTCUTS: ShortcutDefinition[] = [
   { id: 'undo', label: 'Undo', keys: 'ctrl+z', source: 'hardcoded' },
   { id: 'redo', label: 'Redo', keys: 'ctrl+y', source: 'hardcoded' },
   { id: 'insertPageBreak', label: 'Insert Page Break', keys: 'ctrl+enter', source: 'hardcoded' },
-  { id: 'insertLink', label: 'Insert Link', keys: 'ctrl+k', source: 'hardcoded' },
+  { id: 'insertLink', label: 'Hyperlink', keys: 'ctrl+k', source: 'hardcoded' },
 
   // Paragraphs
 

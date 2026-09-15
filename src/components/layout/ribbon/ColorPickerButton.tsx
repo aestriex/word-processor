@@ -3,7 +3,7 @@ import { ChevronDown, Pencil, Check, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { RibbonIconButton } from './RibbonIconButton';
+import { IconButton } from '../IconButton';
 import { COLOR_ROWS, GRAYSCALE_ROW } from '@/lib/colorPalette';
 import { useConfigStore } from '@/lib/config/store';
 import { formatColor } from '@/lib/colorFormat';
@@ -85,7 +85,7 @@ export function ColorPickerButton({
 
   return (
     <div className="flex items-stretch">
-      <RibbonIconButton
+      <IconButton
         label={label}
         icon={
           <div className="flex flex-col items-center">

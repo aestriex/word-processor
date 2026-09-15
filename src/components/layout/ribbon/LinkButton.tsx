@@ -52,7 +52,7 @@ export function LinkButton({ editor }: { editor: Editor }) {
           }
         />
         <TooltipContent>
-          Insert Link
+          Hyperlink
           <KbdGroup>
             {formatShortcutParts("ctrl+k").map((part, i) => (
               <Kbd key={i}>{part}</Kbd>
