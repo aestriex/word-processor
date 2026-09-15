@@ -28,6 +28,11 @@ import { AccessibilityGroup } from "./ribbon/review/groups/AccessibilityGroup";
 import { SearchGroup } from "./ribbon/review/groups/SearchGroup";
 import { TrackingGroup } from "./ribbon/review/groups/TrackingGroup";
 import { DisplayGroup } from "./ribbon/review/groups/DisplayGroup";
+import { DisplayModeGroup } from "./ribbon/view/groups/DisplayModeGroup";
+import { ZoomGroup } from "./ribbon/view/groups/ZoomGroup";
+import { ShowGroup } from "./ribbon/view/groups/ShowGroup";
+import { ModeGroup } from "./ribbon/view/groups/ModeGroup";
+import { WindowGroup } from "./ribbon/view/groups/WindowGroup";
 
 const RIBBON_TABS = ["Home", "Insert", "Layout", "Review", "View"] as const;
 type RibbonTab = (typeof RIBBON_TABS)[number];
@@ -135,6 +140,16 @@ export function Ribbon() {
             <SearchGroup />
             <TrackingGroup />
             <DisplayGroup />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="View" className="m-0 h-14 flex-none px-3">
+          <div className="flex h-full items-center">
+            <DisplayModeGroup />
+            <ZoomGroup />
+            <ShowGroup />
+            <ModeGroup />
+            <WindowGroup />
           </div>
         </TabsContent>
       </Tabs>

@@ -81,6 +81,7 @@ export function PaginatedEditor({
   const linkBubbleRef = useRef<HTMLDivElement>(null);
   const linkBubble = useLinkBubble(editor, linkBubbleRef);
   const showNonPrintingChars = useConfigStore((s) => s.config.editor.showNonPrintingChars);
+  const zoomLevel = useConfigStore((s) => s.config.editor.zoomLevel);
   const { width, height } =
     PAGE_SIZES[pageSizeKey] ?? PAGE_SIZES[FALLBACK_PAGE_SIZE];
 
@@ -89,7 +90,11 @@ export function PaginatedEditor({
       <div
         ref={containerRef}
         className="relative mx-auto"
-        style={{ width: `${width}px` }}
+        style={{
+          width: `${width}px`,
+          transform: `scale(${zoomLevel / 100})`,
+          transformOrigin: 'top center',
+        }}
         onClick={(e) =>
           handleContainerClick(
             e,
