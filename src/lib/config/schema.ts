@@ -16,6 +16,11 @@ export const ConfigSchema = z.object({
       left: z.number(),
       right: z.number(),
     }).default(DEFAULT_MARGINS),
+    colorDisplayFormat: z.enum(['hex', 'rgb', 'hsl']).default('hex'),
+    customColors: z.array(z.string()).default([]),
+    fetchLinkMetadata: z.boolean().default(true), // Will be defaulted to "false" when user setting UI is implemented; left as "true" for testing purposes only
+    showNonPrintingChars: z.boolean().default(false),
+    zoomLevel: z.number().default(100),
   }).default({
     defaultFontFamily: 'system-ui',
     defaultFontSize: 16,
@@ -23,6 +28,11 @@ export const ConfigSchema = z.object({
     defaultPageSize: 'Letter',
     defaultPageGap: PAGE_GAP,
     defaultMargins: DEFAULT_MARGINS,
+    colorDisplayFormat: 'hex',
+    customColors: [],
+    fetchLinkMetadata: true,
+    showNonPrintingChars: false,
+    zoomLevel: 100,
   }),
   keybindings: z.object({
     save: z.string().default('ctrl+s'),

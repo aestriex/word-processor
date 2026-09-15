@@ -14,10 +14,23 @@ export const SHORTCUTS: ShortcutDefinition[] = [
   { id: 'bold', label: 'Bold', keys: 'ctrl+b', source: 'hardcoded' },
   { id: 'italic', label: 'Italic', keys: 'ctrl+i', source: 'hardcoded' },
   { id: 'underline', label: 'Underline', keys: 'ctrl+u', source: 'hardcoded' },
-  { id: 'strike', label: 'Strikethrough', keys: 'ctrl+shift+s', source: 'hardcoded' },
+  { id: 'strike', label: 'Strikethrough', keys: 'ctrl+shift+x', source: 'hardcoded' },
   { id: 'undo', label: 'Undo', keys: 'ctrl+z', source: 'hardcoded' },
   { id: 'redo', label: 'Redo', keys: 'ctrl+y', source: 'hardcoded' },
   { id: 'insertPageBreak', label: 'Insert Page Break', keys: 'ctrl+enter', source: 'hardcoded' },
+  { id: 'insertLink', label: 'Insert Link', keys: 'ctrl+k', source: 'hardcoded' },
+
+  // Paragraphs
+
+  { id: 'alignLeft', label: 'Align Left', keys: 'ctrl+shift+l', source: 'hardcoded' },
+  { id: 'alignCenter', label: 'Align Center', keys: 'ctrl+shift+e', source: 'hardcoded' },
+  { id: 'alignRight', label: 'Align Right', keys: 'ctrl+shift+r', source: 'hardcoded' },
+  { id: 'alignJustify', label: 'Justify', keys: 'ctrl+shift+j', source: 'hardcoded' },
+  { id: 'unorderedList', label: 'Bullet List', keys: 'ctrl+shift+8', source: 'hardcoded' },
+  { id: 'orderedList', label: 'Numbered List', keys: 'ctrl+shift+7', source: 'hardcoded' },
+  { id: 'increaseIndent', label: 'Increase Indent', keys: 'ctrl+]', source: 'hardcoded' },
+  { id: 'decreaseIndent', label: 'Decrease Indent', keys: 'ctrl+[', source: 'hardcoded' },
+  { id: 'clearFormatting', label: 'Clear Formatting', keys: 'ctrl+\\', source: 'hardcoded' },
 ];
 
 export function matchesShortcut(e: KeyboardEvent, shortcut: string): boolean {
@@ -40,4 +53,14 @@ export function findShortcutConflicts(): string[][] {
     seen.set(s.keys, list);
   }
   return [...seen.values()].filter((ids) => ids.length > 1);
+}
+
+export function formatShortcutParts(shortcut: string): string[] {
+  return shortcut.split('+').map((part) => {
+    if (part === 'ctrl') return 'Ctrl';
+    if (part === 'shift') return 'Shift';
+    if (part === 'alt') return 'Alt';
+    if (part === 'meta') return 'Cmd';
+    return part.toUpperCase();
+  });
 }
