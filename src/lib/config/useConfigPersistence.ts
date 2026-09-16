@@ -8,7 +8,6 @@ export function useConfigPersistence() {
   const hasLoaded = useRef(false);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load from disk once, on mount
   useEffect(() => {
     (async () => {
       try {
@@ -22,7 +21,6 @@ export function useConfigPersistence() {
     })();
   }, [loadConfig]);
 
-  // Save to disk (debounced) whenever config changes, after initial load
   useEffect(() => {
     if (!hasLoaded.current) return;
 

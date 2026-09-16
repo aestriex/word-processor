@@ -309,30 +309,19 @@ export const SearchExtension = Extension.create<Record<string, never>, SearchSto
   },
 
   addKeyboardShortcuts() {
-    return {
-      'Mod-f': () => {
-        const sidebarActive = useSidebarStore.getState().active?.id === 'search';
-        if (sidebarActive) {
-          // Sidebar's already handling search — just refocus its input
-          // rather than reopening the (now-hidden) popup on top of it.
-          useSearchStore.getState().bumpFocus();
-        } else {
-          useSearchStore.getState().open();
-        }
-        return true;
-      },
-      Escape: () => {
-        const searchState = useSearchStore.getState();
-        const sidebarState = useSidebarStore.getState();
-        const sidebarActive = sidebarState.active?.id === 'search';
-        if (!searchState.isOpen && !sidebarActive) return false;
-        if (sidebarActive) sidebarState.close();
-        searchState.close();
-        this.editor.commands.clearSearch();
-        return true;
-      },
-    };
-  },
+      return {
+        Escape: () => {
+          const searchState = useSearchStore.getState();
+          const sidebarState = useSidebarStore.getState();
+          const sidebarActive = sidebarState.active?.id === 'search';
+          if (!searchState.isOpen && !sidebarActive) return false;
+          if (sidebarActive) sidebarState.close();
+          searchState.close();
+          this.editor.commands.clearSearch();
+          return true;
+        },
+      };
+    },
 
   addCommands() {
     return {

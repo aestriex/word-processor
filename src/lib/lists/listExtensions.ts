@@ -2,6 +2,9 @@ import { OrderedList } from '@tiptap/extension-list';
 import { BulletList } from '@tiptap/extension-list';
 
 export const OrderedListWithStyle = OrderedList.extend({
+  addKeyboardShortcuts() {
+    return {};
+  },
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -18,6 +21,9 @@ export const OrderedListWithStyle = OrderedList.extend({
 });
 
 export const UnorderedListWithStyle = BulletList.extend({
+  addKeyboardShortcuts() {
+    return {};
+  },
   addAttributes() {
     return {
       ...this.parent?.(),

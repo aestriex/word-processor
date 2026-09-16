@@ -47,19 +47,10 @@ export const PageBreakNode = Node.create({
           const atBlockEnd = $from.parentOffset === $from.parent.content.size;
 
           if (atBlockStart) {
-            // Cursor already sits at the very start of its block — insert
-            // immediately before it, no splitting needed.
             insertPos = $from.before();
           } else if (atBlockEnd) {
-            // Cursor already sits at the very end of its block — insert
-            // immediately after it, no splitting needed.
             insertPos = $from.after();
           } else {
-            // Cursor is genuinely mid-text. Explicitly split the block
-            // ourselves here, rather than inserting a block-level node at an
-            // inline position and letting ProseMirror's internal fitting
-            // logic decide how to restructure things — that implicit
-            // restructuring is what caused the break/paragraph ordering bug.
             const splitPos = $from.pos;
             newTr = newTr.split(splitPos);
             insertPos = newTr.mapping.map(splitPos);
@@ -87,12 +78,6 @@ export const PageBreakNode = Node.create({
           if (dispatch) dispatch(newTr);
           return true;
         },
-    };
-  },
-
-  addKeyboardShortcuts() {
-    return {
-      'Mod-Enter': () => this.editor.commands.insertPageBreak(),
     };
   },
 });

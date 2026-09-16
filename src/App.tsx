@@ -2,39 +2,39 @@ import { useEffect } from 'react';
 import { Editor } from './components/editor/Editor';
 import { SearchPanel } from './components/editor/SearchPanel';
 import { SearchResultsSidebar } from './components/editor/SearchResultsSidebar';
-import { SidebarHost } from './lib/layout/sidebar/SidebarHost';
+import { SettingsDialog } from './components/settings/SettingsDialog';
 import { useConfigStore } from './lib/config/store';
 import { useConfigPersistence } from './lib/config/useConfigPersistence';
-import { useDocumentStore } from './lib/document/store';
 import './index.css';
-import { matchesShortcut } from './lib/shortcuts';
+import { useAppShortcuts } from './lib/shortcuts/useAppShortcuts';
 import { useAutosave } from './lib/document/useAutosave';
 import { useMenuEvents } from './lib/menu/useMenuEvents';
 import { StatusBar } from './components/layout/StatusBar';
 import { Ribbon } from './components/layout/Ribbon';
+import { SidebarHost } from './lib/layout/sidebar/SidebarHost';
 
 function App() {
   useConfigPersistence();
   useAutosave();
   useMenuEvents();
+  useAppShortcuts();
 
   const theme = useConfigStore((s) => s.config.theme);
 
-  const saveShortcut = useConfigStore((s) => s.config.keybindings.save);
-
+  // Applied to <html>, not a wrapper div — Base UI's Portal-based
+  // components (Dialog, DropdownMenu, Popover, Tooltip) render their
+  // actual content as a direct child of <body>, outside any wrapper div
+  // in this component tree. The Tailwind `dark` variant only matches
+  // .dark or *actual DOM descendants* of .dark — a wrapper div's class
+  // has zero effect on portaled content sitting outside it, causing it
+  // to silently fall back to light-mode tokens with no error. <html> is
+  // an ancestor of literally everything, portaled or not.
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (matchesShortcut(e, saveShortcut)) {
-        e.preventDefault();
-        useDocumentStore.getState().save();
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [saveShortcut]);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
 
   return (
-    <div className={theme === 'dark' ? 'dark' : ''}>
+    <>
       <main className="flex h-screen flex-col bg-background text-foreground">
         <Ribbon />
         <div className="relative flex-1 overflow-hidden">
@@ -48,7 +48,8 @@ function App() {
         </div>
         <StatusBar />
       </main>
-    </div>
+      <SettingsDialog />
+    </>
   );
 }
 

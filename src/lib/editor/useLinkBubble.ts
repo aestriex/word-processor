@@ -1,18 +1,62 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Editor } from '@tiptap/core';
+import type { EditorState } from '@tiptap/pm/state';
+import { useLinkEditorStore } from './linkEditorStore';
 
 export interface LinkBubbleState {
+  /** 'edit' — an existing link, rich view (metadata) + edit/remove.
+   *  'insert' — a brand-new link being created, blank form. */
+  mode: 'edit' | 'insert';
   href: string;
+  /** Existing link text (mode 'edit'), or the currently-selected text
+   *  being wrapped (mode 'insert' with a real selection). Empty string
+   *  in mode 'insert' when there was no selection — the popover then
+   *  prompts for display text separately. */
   text: string;
   from: number;
   to: number;
   coords: { left: number; top: number };
 }
 
+/** Finds the link mark (if any) covering `pos`, and its full extent
+ *  within its parent block — shared by both the reactive
+ *  cursor-moved-into-a-link path and the explicit Ctrl+K/button-triggered
+ *  check for "is there already a link here?". */
+function findLinkAt(state: EditorState, pos: number) {
+  const marks = state.doc.resolve(pos).marks();
+  const linkMark = marks.find((m) => m.type.name === 'link');
+  if (!linkMark) return null;
+
+  let start = pos;
+  let end = pos;
+  const $pos = state.doc.resolve(pos);
+  const parent = $pos.parent;
+  const parentStart = $pos.start();
+
+  parent.forEach((node, offset) => {
+    const nodeStart = parentStart + offset;
+    const nodeEnd = nodeStart + node.nodeSize;
+    if (nodeStart <= pos && pos <= nodeEnd && node.marks.some((m) => m.type.name === 'link')) {
+      start = Math.min(start === pos ? nodeStart : start, nodeStart);
+      end = Math.max(end === pos ? nodeEnd : end, nodeEnd);
+    }
+  });
+
+  return { href: linkMark.attrs.href as string, text: state.doc.textBetween(start, end), from: start, to: end };
+}
+
 export function useLinkBubble(editor: Editor | null, bubbleElRef: React.RefObject<HTMLElement | null>) {
   const [bubble, setBubble] = useState<LinkBubbleState | null>(null);
   const pinnedRef = useRef(false);
 
+  const insertRequestId = useLinkEditorStore((s) => s.insertRequestId);
+  const closeRequestId = useLinkEditorStore((s) => s.closeRequestId);
+  const lastInsertId = useRef(insertRequestId);
+  const lastCloseId = useRef(closeRequestId);
+
+  // --- Reactive path: cursor moves into/out of an existing link ---
+  // Unchanged behavior from before this feature — only shows the rich
+  // edit view for an existing link, and only for a collapsed selection.
   useEffect(() => {
     if (!editor) return;
     const currentEditor = editor;
@@ -21,37 +65,26 @@ export function useLinkBubble(editor: Editor | null, bubbleElRef: React.RefObjec
       if (pinnedRef.current) return;
 
       const { state } = currentEditor;
-      const { from } = state.selection;
-      const marks = state.doc.resolve(from).marks();
-      const linkMark = marks.find((m) => m.type.name === 'link');
+      const { from, empty } = state.selection;
 
-      if (!linkMark || !state.selection.empty) {
+      if (!empty) {
         setBubble(null);
         return;
       }
 
-      let start = from;
-      let end = from;
-      const $pos = state.doc.resolve(from);
-      const parent = $pos.parent;
-      const parentStart = $pos.start();
+      const existing = findLinkAt(state, from);
+      if (!existing) {
+        setBubble(null);
+        return;
+      }
 
-      parent.forEach((node, offset) => {
-        const nodeStart = parentStart + offset;
-        const nodeEnd = nodeStart + node.nodeSize;
-        if (nodeStart <= from && from <= nodeEnd && node.marks.some((m) => m.type.name === 'link')) {
-          start = Math.min(start === from ? nodeStart : start, nodeStart);
-          end = Math.max(end === from ? nodeEnd : end, nodeEnd);
-        }
-      });
-
-      const domCoords = currentEditor.view.coordsAtPos(start);
-
+      const domCoords = currentEditor.view.coordsAtPos(existing.from);
       setBubble({
-        href: linkMark.attrs.href,
-        text: state.doc.textBetween(start, end),
-        from: start,
-        to: end,
+        mode: 'edit',
+        href: existing.href,
+        text: existing.text,
+        from: existing.from,
+        to: existing.to,
         coords: { left: domCoords.left, top: domCoords.bottom },
       });
     }
@@ -72,6 +105,53 @@ export function useLinkBubble(editor: Editor | null, bubbleElRef: React.RefObjec
       document.removeEventListener('pointerdown', handlePointerDown, true);
     };
   }, [editor, bubbleElRef]);
+
+  // --- Explicit open: Ctrl+K or LinkButton (Ribbon/FloatingToolbar) ---
+  useEffect(() => {
+    if (!editor) return;
+    if (insertRequestId === lastInsertId.current) return;
+    lastInsertId.current = insertRequestId;
+
+    const { state } = editor;
+    const { from, to, empty } = state.selection;
+
+    // Already on/covering an existing link — jump straight to the rich
+    // edit view rather than starting a blank insert form.
+    const existing = findLinkAt(state, from);
+    if (existing) {
+      const domCoords = editor.view.coordsAtPos(existing.from);
+      pinnedRef.current = true;
+      setBubble({
+        mode: 'edit',
+        href: existing.href,
+        text: existing.text,
+        from: existing.from,
+        to: existing.to,
+        coords: { left: domCoords.left, top: domCoords.bottom },
+      });
+      return;
+    }
+
+    const text = empty ? '' : state.doc.textBetween(from, to);
+    const domCoords = editor.view.coordsAtPos(from);
+    pinnedRef.current = true;
+    setBubble({
+      mode: 'insert',
+      href: '',
+      text,
+      from,
+      to,
+      coords: { left: domCoords.left, top: domCoords.bottom },
+    });
+  }, [insertRequestId, editor]);
+
+  // --- Explicit close: Cancel/Save/X/Escape inside the popover itself ---
+  useEffect(() => {
+    if (closeRequestId === lastCloseId.current) return;
+    lastCloseId.current = closeRequestId;
+    pinnedRef.current = false;
+    setBubble(null);
+  }, [closeRequestId]);
 
   return bubble;
 }

@@ -9,6 +9,7 @@ declare module '@tiptap/core' {
       unsetLineHeight: () => ReturnType;
       increaseIndent: () => ReturnType;
       decreaseIndent: () => ReturnType;
+      clearFormatting: () => ReturnType;
     };
   }
 }
@@ -60,6 +61,25 @@ const directionalIndentAttributes = {
   },
 };
 
+const spacingAttributes = {
+  spaceBefore: {
+    default: 0,
+    parseHTML: (element: HTMLElement) => parseInt(element.style.marginTop || '0', 10),
+    renderHTML: (attributes: { spaceBefore?: number }) => {
+      if (!attributes.spaceBefore) return {};
+      return { style: `margin-top: ${attributes.spaceBefore}px` };
+    },
+  },
+  spaceAfter: {
+    default: 0,
+    parseHTML: (element: HTMLElement) => parseInt(element.style.marginBottom || '0', 10),
+    renderHTML: (attributes: { spaceAfter?: number }) => {
+      if (!attributes.spaceAfter) return {};
+      return { style: `margin-bottom: ${attributes.spaceAfter}px` };
+    },
+  },
+};
+
 export const ParagraphWithExtras = Paragraph.extend({
   addAttributes() {
     return {
@@ -80,25 +100,6 @@ export const HeadingWithExtras = Heading.extend({
     };
   },
 });
-
-const spacingAttributes = {
-  spaceBefore: {
-    default: 0,
-    parseHTML: (element: HTMLElement) => parseInt(element.style.marginTop || '0', 10),
-    renderHTML: (attributes: { spaceBefore?: number }) => {
-      if (!attributes.spaceBefore) return {};
-      return { style: `margin-top: ${attributes.spaceBefore}px` };
-    },
-  },
-  spaceAfter: {
-    default: 0,
-    parseHTML: (element: HTMLElement) => parseInt(element.style.marginBottom || '0', 10),
-    renderHTML: (attributes: { spaceAfter?: number }) => {
-      if (!attributes.spaceAfter) return {};
-      return { style: `margin-bottom: ${attributes.spaceAfter}px` };
-    },
-  },
-};
 
 export const ParagraphExtraCommands = Extension.create({
   name: 'paragraphExtraCommands',
@@ -152,13 +153,24 @@ export const ParagraphExtraCommands = Extension.create({
           }
           return true;
         },
+
+      clearFormatting:
+        () =>
+        ({ editor }: { editor: any }) => {
+          editor
+            .chain()
+            .focus()
+            .unsetAllMarks()
+            .updateAttributes('paragraph', { lineHeight: null, indent: 0, textAlign: null })
+            .updateAttributes('heading', { lineHeight: null, textAlign: null })
+            .run();
+          return true;
+        },
     };
   },
 
   addKeyboardShortcuts() {
     return {
-      'Mod-]': () => this.editor.commands.increaseIndent(),
-      'Mod-[': () => this.editor.commands.decreaseIndent(),
       Backspace: () => {
         const { state } = this.editor;
         const { $from, empty } = state.selection;
@@ -169,13 +181,6 @@ export const ParagraphExtraCommands = Extension.create({
         if (node.type.name !== 'paragraph' || !node.attrs.indent) return false;
 
         return this.editor.commands.decreaseIndent();
-      },
-      'Mod-\\': () => {
-        this.editor.chain().focus().unsetAllMarks()
-          .updateAttributes('paragraph', { lineHeight: null, indent: 0, textAlign: null })
-          .updateAttributes('heading', { lineHeight: null, textAlign: null })
-          .run();
-        return true;
       },
     };
   },
