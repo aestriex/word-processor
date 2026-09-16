@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RibbonGroup } from "../../../RibbonGroup";
-import { RibbonIconButton } from "../../RibbonIconButton";
+import { IconButton } from "../../../IconButton";
 import { useDocumentStore } from "@/lib/document/store";
 import { FontSizeInput } from "../FontSizeInput";
 import { useConfigStore } from "@/lib/config/store";
@@ -109,7 +109,7 @@ export function FontGroup() {
         }}
       />
 
-      <RibbonIconButton
+      <IconButton
         label="Bold"
         icon={<Bold size={16} />}
         active={attrs?.isBold}
@@ -117,7 +117,7 @@ export function FontGroup() {
         shortcutId="bold"
       />
 
-      <RibbonIconButton
+      <IconButton
         label="Italic"
         icon={<Italic size={16} />}
         active={attrs?.isItalic}
@@ -125,7 +125,7 @@ export function FontGroup() {
         shortcutId="italic"
       />
 
-      <RibbonIconButton
+      <IconButton
         label="Underline"
         icon={<UnderlineIcon size={16} />}
         active={attrs?.isUnderline}
@@ -133,7 +133,7 @@ export function FontGroup() {
         shortcutId="underline"
       />
 
-      <RibbonIconButton
+      <IconButton
         label="Strikethrough"
         icon={<Strikethrough size={16} />}
         active={attrs?.isStrike}

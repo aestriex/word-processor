@@ -1,23 +1,23 @@
 import { FileStack, Maximize, BookOpen } from 'lucide-react';
 import { RibbonGroup } from '../../../RibbonGroup';
-import { RibbonIconButton } from '../../RibbonIconButton';
+import { IconButton } from '../../../IconButton';
 
 export function DisplayModeGroup() {
   return (
     <RibbonGroup>
-      <RibbonIconButton
+      <IconButton
         label="Paginated / Pageless"
         icon={<FileStack size={16} />}
         onClick={() => {}}
         disabled
       />
-      <RibbonIconButton
+      <IconButton
         label="Focus Mode"
         icon={<Maximize size={16} />}
         onClick={() => {}}
         disabled
       />
-      <RibbonIconButton
+      <IconButton
         label="Reading Mode"
         icon={<BookOpen size={16} />}
         onClick={() => {}}

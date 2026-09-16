@@ -8,6 +8,8 @@ import { LinkBubble } from "./LinkBubble";
 import { TooltipProvider } from "../ui/tooltip";
 import { useConfigStore } from "@/lib/config/store";
 import { useDocumentStore } from "@/lib/document/store";
+import { FloatingToolbar } from "./FloatingToolbar";
+import { useFloatingToolbar } from "@/lib/editor/useFloatingToolbar";
 
 interface Margins {
   top: number;
@@ -86,11 +88,16 @@ export function PaginatedEditor({
   const { width, height } =
     PAGE_SIZES[pageSizeKey] ?? PAGE_SIZES[FALLBACK_PAGE_SIZE];
 
-  const setPageInfo = useDocumentStore((s) => s.setPageInfo)
+  const setPageInfo = useDocumentStore((s) => s.setPageInfo);
 
   useEffect(() => {
     setPageInfo(pageOffsets.length, 1); // currentPage tracking deferred
   }, [pageOffsets, setPageInfo]);
+
+  const showFloatingToolbar = useConfigStore((s) => s.config.useFloatingToolbar);
+  const floatingToolbarPosition = useFloatingToolbar(editor, showFloatingToolbar);
+
+  console.log('rendering with pageOffsets:', pageOffsets);
 
   return (
     <TooltipProvider>
@@ -156,6 +163,15 @@ export function PaginatedEditor({
             ref={linkBubbleRef}
             editor={editor}
             bubble={linkBubble}
+            containerTop={containerRef.current.getBoundingClientRect().top}
+            containerLeft={containerRef.current.getBoundingClientRect().left}
+          />
+        )}
+
+        {floatingToolbarPosition && editor && containerRef.current && (
+          <FloatingToolbar
+            editor={editor}
+            position={floatingToolbarPosition}
             containerTop={containerRef.current.getBoundingClientRect().top}
             containerLeft={containerRef.current.getBoundingClientRect().left}
           />

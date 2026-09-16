@@ -1,9 +1,9 @@
 import { PaintBucket } from 'lucide-react';
-import { RibbonIconButton } from '../RibbonIconButton';
+import { IconButton } from '../../IconButton';
 
 export function BackgroundColorButton() {
   return (
-    <RibbonIconButton
+    <IconButton
       label="Page Background Color (coming soon)"
       icon={<PaintBucket size={16} />}
       onClick={() => {}}

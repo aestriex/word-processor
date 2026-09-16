@@ -1,6 +1,6 @@
 import { ZoomIn, ZoomOut } from 'lucide-react';
 import { RibbonGroup } from '../../../RibbonGroup';
-import { RibbonIconButton } from '../../RibbonIconButton';
+import { IconButton } from '../../../IconButton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -26,7 +26,7 @@ export function ZoomGroup() {
 
   return (
     <RibbonGroup>
-      <RibbonIconButton
+      <IconButton
         label="Zoom Out"
         icon={<ZoomOut size={16} />}
         onClick={() => setZoom(zoom - ZOOM_STEP)}
@@ -62,7 +62,7 @@ export function ZoomGroup() {
         </PopoverContent>
       </Popover>
 
-      <RibbonIconButton
+      <IconButton
         label="Zoom In"
         icon={<ZoomIn size={16} />}
         onClick={() => setZoom(zoom + ZOOM_STEP)}

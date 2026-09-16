@@ -1,5 +1,5 @@
 import { Pilcrow } from 'lucide-react';
-import { RibbonIconButton } from '../RibbonIconButton';
+import { IconButton } from '../../IconButton';
 import { useConfigStore } from '@/lib/config/store';
 
 export function NonPrintingCharsToggle() {
@@ -16,7 +16,7 @@ export function NonPrintingCharsToggle() {
   }
 
   return (
-    <RibbonIconButton
+    <IconButton
       label="Show Non-Printing Characters"
       icon={<Pilcrow size={16} />}
       active={enabled}

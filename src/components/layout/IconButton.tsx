@@ -5,7 +5,7 @@ import { Kbd, KbdGroup } from '@/components/ui/kbd';
 import { useShortcutDisplay } from '@/lib/useShortcutDisplay';
 import { formatShortcutParts } from '@/lib/shortcuts';
 
-interface RibbonIconButtonProps {
+interface IconButtonProps {
   label: string;
   icon: ReactNode;
   active?: boolean;
@@ -14,7 +14,7 @@ interface RibbonIconButtonProps {
   shortcutId?: string;
 }
 
-export function RibbonIconButton({ label, icon, active, disabled, onClick, shortcutId }: RibbonIconButtonProps) {
+export function IconButton({ label, icon, active, disabled, onClick, shortcutId }: IconButtonProps) {
   const shortcut = shortcutId ? useShortcutDisplay(shortcutId) : null;
 
   return (

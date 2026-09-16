@@ -1,6 +1,6 @@
 import { RemoveFormatting } from 'lucide-react';
 import type { Editor } from '@tiptap/core';
-import { RibbonIconButton } from '../RibbonIconButton';
+import { IconButton } from '../../IconButton';
 
 export function ClearFormattingButton({ editor }: { editor: Editor }) {
   function clearFormatting() {
@@ -14,7 +14,7 @@ export function ClearFormattingButton({ editor }: { editor: Editor }) {
   }
 
   return (
-    <RibbonIconButton
+    <IconButton
       label="Clear Formatting"
       icon={<RemoveFormatting size={16} />}
       onClick={clearFormatting}
