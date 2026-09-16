@@ -16,6 +16,7 @@ import {
   UnorderedListWithStyle,
 } from "@/lib/lists/listExtensions";
 import { HeadingWithExtras, ParagraphExtraCommands, ParagraphWithExtras } from "@/lib/editor/ParagraphExtensions";
+import { SearchExtension } from "@/lib/editor/search/SearchExtension";
 import Link from "@tiptap/extension-link";
 
 export function Editor() {
@@ -54,6 +55,7 @@ export function Editor() {
         openOnClick: false,
         HTMLAttributes: { target: null, rel: 'noopener noreferrer nofollow' },
       }),
+      SearchExtension,
       PageBreakNode,
       PaginationExtension.configure({
         pageGap: pageSetup.pageGap,
