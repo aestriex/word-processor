@@ -4,7 +4,7 @@ export interface ShortcutDefinition {
   keys: string;
   /** 'config' = reads from app-config, actually rebindable today.
    *  'hardcoded' = bound internally by a TipTap/ProseMirror extension;
-   *  documented here for visibility, not yet rebindable (M2 #27). */
+   *  documented here for visibility, not yet rebindable (M2). */
   source: 'config' | 'hardcoded';
   configPath?: string;
 }
@@ -19,6 +19,7 @@ export const SHORTCUTS: ShortcutDefinition[] = [
   { id: 'redo', label: 'Redo', keys: 'ctrl+y', source: 'hardcoded' },
   { id: 'insertPageBreak', label: 'Insert Page Break', keys: 'ctrl+enter', source: 'hardcoded' },
   { id: 'insertLink', label: 'Hyperlink', keys: 'ctrl+k', source: 'hardcoded' },
+  { id: 'find', label: 'Find & Replace', keys: 'ctrl+f', source: 'hardcoded' },
 
   // Paragraphs
 

@@ -15,7 +15,7 @@ interface IconButtonProps {
 }
 
 export function IconButton({ label, icon, active, disabled, onClick, shortcutId }: IconButtonProps) {
-  const shortcut = shortcutId ? useShortcutDisplay(shortcutId) : null;
+  const shortcut = useShortcutDisplay(shortcutId ?? '');
 
   return (
     <Tooltip>

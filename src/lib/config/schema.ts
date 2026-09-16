@@ -35,6 +35,11 @@ export const ConfigSchema = z.object({
     showNonPrintingChars: false,
     zoomLevel: 100,
   }),
+  accessibility: z.object({
+    reduceMotion: z.enum(['system', 'on', 'off']).default('system'),
+  }).default({
+    reduceMotion: 'system',
+  }),
   keybindings: z.object({
     save: z.string().default('ctrl+s'),
   }).default({

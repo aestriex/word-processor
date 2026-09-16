@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 import { Editor } from './components/editor/Editor';
+import { SearchPanel } from './components/editor/SearchPanel';
+import { SearchResultsSidebar } from './components/editor/SearchResultsSidebar';
+import { SidebarHost } from './lib/layout/sidebar/SidebarHost';
 import { useConfigStore } from './lib/config/store';
 import { useConfigPersistence } from './lib/config/useConfigPersistence';
 import { useDocumentStore } from './lib/document/store';
@@ -34,8 +37,14 @@ function App() {
     <div className={theme === 'dark' ? 'dark' : ''}>
       <main className="flex h-screen flex-col bg-background text-foreground">
         <Ribbon />
-        <div className="flex-1 overflow-auto pt-6">
-          <Editor />
+        <div className="relative flex-1 overflow-hidden">
+          <div className="absolute inset-0 overflow-auto pt-6">
+            <Editor />
+          </div>
+          <SearchPanel />
+          <SidebarHost id="search" anchor="right">
+            <SearchResultsSidebar />
+          </SidebarHost>
         </div>
         <StatusBar />
       </main>

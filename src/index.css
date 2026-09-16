@@ -4,6 +4,17 @@
 @import "@fontsource-variable/geist";
 @plugin "@tailwindcss/typography";
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
@@ -42,6 +53,10 @@
   --sidebar-accent-foreground: oklch(0.18 0.01 285);
   --sidebar-border: oklch(0.91 0.003 285);
   --sidebar-ring: oklch(0.64 0.19 42);
+  --color-search-highlight: oklch(88% 0.16 95);
+  --color-search-highlight-foreground: oklch(25% 0.02 95);
+  --color-search-current: oklch(72% 0.19 42);
+  --color-search-current-foreground: oklch(98% 0 0);
 }
 
 .dark {
@@ -152,6 +167,17 @@
   color: theme(colors.muted-foreground);
   opacity: 0.5;
   margin-left: 2px;
+}
+
+.tensor-search-match {
+  background-color: var(--color-search-highlight);
+  color: var(--color-search-highlight-foreground);
+  border-radius: 2px;
+}
+
+.tensor-search-match-current {
+  background-color: var(--color-search-current);
+  color: var(--color-search-current-foreground);
 }
 
 @theme inline {
