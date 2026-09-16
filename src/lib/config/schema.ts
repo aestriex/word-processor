@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { PAGE_GAP, DEFAULT_MARGINS } from '../pagination/constants';
+import { SHORTCUTS } from '../shortcuts';
+
+const DEFAULT_KEYBINDINGS: Record<string, string> = Object.fromEntries(
+  SHORTCUTS.filter((s) => s.context !== 'os').map((s) => [s.id, s.keys]),
+);
 
 export const ConfigSchema = z.object({
   theme: z.enum(['light', 'dark']).default('light'),
@@ -19,7 +24,6 @@ export const ConfigSchema = z.object({
     }).default(DEFAULT_MARGINS),
     colorDisplayFormat: z.enum(['hex', 'rgb', 'hsl']).default('hex'),
     customColors: z.array(z.string()).default([]),
-    fetchLinkMetadata: z.boolean().default(true), // Will be defaulted to "false" when user setting UI is implemented; left as "true" for testing purposes only
     showNonPrintingChars: z.boolean().default(false),
     zoomLevel: z.number().default(100),
   }).default({
@@ -31,20 +35,29 @@ export const ConfigSchema = z.object({
     defaultMargins: DEFAULT_MARGINS,
     colorDisplayFormat: 'hex',
     customColors: [],
-    fetchLinkMetadata: true,
     showNonPrintingChars: false,
     zoomLevel: 100,
+  }),
+  privacy: z.object({
+    autoCheckForUpdates: z.boolean().default(false),
+    fetchLinkMetadata: z.boolean().default(true),
+  }).default({
+    autoCheckForUpdates: false,
+    fetchLinkMetadata: true
   }),
   accessibility: z.object({
     reduceMotion: z.enum(['system', 'on', 'off']).default('system'),
   }).default({
     reduceMotion: 'system',
   }),
-  keybindings: z.object({
-    save: z.string().default('ctrl+s'),
-  }).default({
-    save: 'ctrl+s',
-  }),
+  /** Keyed by ShortcutDefinition.id (see src/lib/shortcuts.ts). Flat
+   *  record rather than a fixed shape — every command in the Shortcuts
+   *  registry gets an entry here, seeded from that registry's defaults.
+   *  An empty string value means "explicitly unbound". Missing keys
+   *  (e.g. a persisted config from before a given shortcut existed) fall
+   *  back to the registry default via getEffectiveKeybinding() — never
+   *  index this object directly. */
+  keybindings: z.record(z.string(), z.string()).default(DEFAULT_KEYBINDINGS),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;

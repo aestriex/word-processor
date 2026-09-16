@@ -5,7 +5,6 @@ import { TextStyle, FontSize } from "@tiptap/extension-text-style";
 import FontFamily from "@tiptap/extension-font-family";
 import { Color } from "@tiptap/extension-color";
 import { Highlight } from "@tiptap/extension-highlight";
-import { TextAlign } from "@tiptap/extension-text-align";
 import { useDocumentStore } from "../../lib/document/store";
 import { useConfigStore } from "../../lib/config/store";
 import { PaginationExtension } from "../../lib/pagination/PaginationExtension";
@@ -17,6 +16,14 @@ import {
 } from "@/lib/lists/listExtensions";
 import { HeadingWithExtras, ParagraphExtraCommands, ParagraphWithExtras } from "@/lib/editor/ParagraphExtensions";
 import { SearchExtension } from "@/lib/editor/search/SearchExtension";
+import { DynamicShortcutsExtension } from "@/lib/editor/ShortcutsExtension";
+import {
+  BoldNoShortcut,
+  ItalicNoShortcut,
+  UnderlineNoShortcut,
+  StrikeNoShortcut,
+  TextAlignNoShortcut,
+} from "@/lib/editor/RemoveDefShortcuts";
 import Link from "@tiptap/extension-link";
 
 export function Editor() {
@@ -39,7 +46,15 @@ export function Editor() {
         paragraph: false,
         heading: false,
         link: false,
+        bold: false,
+        italic: false,
+        underline: false,
+        strike: false,
       }),
+      BoldNoShortcut,
+      ItalicNoShortcut,
+      UnderlineNoShortcut,
+      StrikeNoShortcut,
       OrderedListWithStyle,
       UnorderedListWithStyle,
       TextStyle,
@@ -47,7 +62,7 @@ export function Editor() {
       Color,
       Highlight.configure({ multicolor: true }),
       FontSize,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      TextAlignNoShortcut.configure({ types: ["heading", "paragraph"] }),
       ParagraphWithExtras,
       HeadingWithExtras,
       ParagraphExtraCommands,
@@ -56,6 +71,7 @@ export function Editor() {
         HTMLAttributes: { target: null, rel: 'noopener noreferrer nofollow' },
       }),
       SearchExtension,
+      DynamicShortcutsExtension,
       PageBreakNode,
       PaginationExtension.configure({
         pageGap: pageSetup.pageGap,

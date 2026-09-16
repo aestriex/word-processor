@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDocumentStore } from "@/lib/document/store";
@@ -34,6 +35,7 @@ import { ShowGroup } from "./ribbon/view/groups/ShowGroup";
 import { ModeGroup } from "./ribbon/view/groups/ModeGroup";
 import { WindowGroup } from "./ribbon/view/groups/WindowGroup";
 import { useConfigStore } from "@/lib/config/store";
+import { useSettingsDialogStore } from "@/lib/settings/store";
 
 const RIBBON_TABS = ["Home", "Insert", "Layout", "Review", "View"] as const;
 type RibbonTab = (typeof RIBBON_TABS)[number];
@@ -80,6 +82,8 @@ export function Ribbon() {
                   <DropdownMenuItem onClick={openFile}>Open…</DropdownMenuItem>
                   <DropdownMenuItem onClick={save}>Save</DropdownMenuItem>
                   <DropdownMenuItem onClick={saveAs}>Save As…</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => useSettingsDialogStore.getState().open()}>Settings</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 

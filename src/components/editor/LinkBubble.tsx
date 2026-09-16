@@ -1,5 +1,5 @@
 import { forwardRef, useState, useEffect } from 'react';
-import { ExternalLink, Pencil, Link2Off, Copy } from 'lucide-react';
+import { ExternalLink, Pencil, Link2Off, Copy, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -8,6 +8,7 @@ import { openUrl } from '@tauri-apps/plugin-opener';
 import type { Editor } from '@tiptap/core';
 import type { LinkBubbleState } from '@/lib/editor/useLinkBubble';
 import { fetchLinkMetadata, type LinkMetadata } from '@/lib/editor/linkMetadata';
+import { useLinkEditorStore } from '@/lib/editor/linkEditorStore';
 
 interface LinkBubbleProps {
   editor: Editor;
@@ -20,6 +21,55 @@ export const LinkBubble = forwardRef<HTMLDivElement, LinkBubbleProps>(function L
   { editor, bubble, containerTop, containerLeft },
   ref
 ) {
+  function handleClose() {
+    useLinkEditorStore.getState().requestClose();
+  }
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      handleClose();
+    }
+  }
+
+  const [insertUrl, setInsertUrl] = useState('');
+  const [insertText, setInsertText] = useState(bubble.text);
+
+  useEffect(() => {
+    if (bubble.mode !== 'insert') return;
+    setInsertUrl('');
+    setInsertText(bubble.text);
+  }, [bubble.mode, bubble.from, bubble.to, bubble.text]);
+
+  function applyInsert() {
+      if (!insertUrl) return;
+      const href = /^https?:\/\//i.test(insertUrl) ? insertUrl : `https://${insertUrl}`;
+      const displayText = bubble.text || insertText || href;
+
+      if (bubble.from === bubble.to) {
+        editor
+          .chain()
+          .focus()
+          .insertContentAt(bubble.from, {
+            type: 'text',
+            text: displayText,
+            marks: [{ type: 'link', attrs: { href } }, { type: 'underline' }],
+          })
+          .setTextSelection(bubble.from + displayText.length)
+          .run();
+      } else {
+        editor
+          .chain()
+          .focus()
+          .setTextSelection({ from: bubble.from, to: bubble.to })
+          .extendMarkRange('link')
+          .setLink({ href })
+          .setUnderline()
+          .run();
+      }
+
+      handleClose();
+    }
+
   const [editing, setEditing] = useState(false);
   const [urlDraft, setUrlDraft] = useState(bubble.href);
   const [activeHref, setActiveHref] = useState(bubble.href);
@@ -27,10 +77,12 @@ export const LinkBubble = forwardRef<HTMLDivElement, LinkBubbleProps>(function L
   const [status, setStatus] = useState<'loading' | 'done' | 'error'>('loading');
 
   useEffect(() => {
+    if (bubble.mode !== 'edit') return;
     setActiveHref(bubble.href);
-  }, [bubble.href, bubble.from]);
+  }, [bubble.mode, bubble.href, bubble.from]);
 
   useEffect(() => {
+    if (bubble.mode !== 'edit') return;
     setUrlDraft(activeHref);
     setEditing(false);
     setMetadata(null);
@@ -46,7 +98,7 @@ export const LinkBubble = forwardRef<HTMLDivElement, LinkBubbleProps>(function L
     return () => {
       cancelled = true;
     };
-  }, [activeHref]);
+  }, [bubble.mode, activeHref]);
 
   function saveEdit() {
     if (!urlDraft) return;
@@ -75,13 +127,74 @@ export const LinkBubble = forwardRef<HTMLDivElement, LinkBubbleProps>(function L
       .extendMarkRange('link')
       .unsetLink()
       .run();
+    handleClose();
+  }
+
+  const popoverStyle = { left: bubble.coords.left - containerLeft, top: bubble.coords.top - containerTop + 4 };
+
+  if (bubble.mode === 'insert') {
+    return (
+      <div
+        ref={ref}
+        data-link-bubble
+        onMouseDown={(e) => e.stopPropagation()}
+        onKeyDown={handleKeyDown}
+        className="absolute z-30 w-72 rounded-lg border border-border bg-popover p-3 text-sm shadow-md"
+        style={popoverStyle}
+      >
+        <div className="mb-2 flex items-center justify-between">
+          <span className="font-medium">Add Link</span>
+          <Button variant="ghost" size="icon-xs" onClick={handleClose}>
+            <X size={12} />
+          </Button>
+        </div>
+
+        {bubble.text === '' && (
+          <div className="mb-2">
+            <label className="mb-1 block text-xs text-muted-foreground">Text to display</label>
+            <Input
+              value={insertText}
+              onChange={(e) => setInsertText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && applyInsert()}
+              className="h-7 text-xs"
+              placeholder="Link text"
+            />
+          </div>
+        )}
+
+        <div className="mb-2">
+          <label className="mb-1 block text-xs text-muted-foreground">Link</label>
+          <Input
+            autoFocus
+            value={insertUrl}
+            onChange={(e) => setInsertUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                applyInsert();
+              }
+            }}
+            className="h-7 text-xs"
+            placeholder="https://example.com"
+          />
+        </div>
+
+        <div className="flex justify-end gap-1">
+          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button size="sm" className="h-7 px-2 text-xs" onClick={applyInsert} disabled={!insertUrl}>
+            Insert
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   let hostname = activeHref;
   try {
     hostname = new URL(activeHref).hostname;
   } catch {
-    // leave hostname as the raw href if it's not a fully valid URL
   }
 
   return (
@@ -89,22 +202,31 @@ export const LinkBubble = forwardRef<HTMLDivElement, LinkBubbleProps>(function L
       ref={ref}
       data-link-bubble
       onMouseDown={(e) => e.stopPropagation()}
+      onKeyDown={handleKeyDown}
       className="absolute z-30 w-72 rounded-lg border border-border bg-popover p-3 text-sm shadow-md"
-      style={{ left: bubble.coords.left - containerLeft, top: bubble.coords.top - containerTop + 4 }}
+      style={popoverStyle}
     >
       {editing ? (
-        <div className="flex items-center gap-1">
-          <Input
-            autoFocus
-            value={urlDraft}
-            onChange={(e) => setUrlDraft(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && saveEdit()}
-            className="h-7 flex-1 text-xs"
-          />
-          <Button size="sm" className="h-7 px-2 text-xs" onClick={saveEdit}>
-            Save
-          </Button>
-        </div>
+        <>
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-medium">Edit Link</span>
+            <Button variant="ghost" size="icon-xs" onClick={handleClose}>
+              <X size={12} />
+            </Button>
+          </div>
+          <div className="flex items-center gap-1">
+            <Input
+              autoFocus
+              value={urlDraft}
+              onChange={(e) => setUrlDraft(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && saveEdit()}
+              className="h-7 flex-1 text-xs"
+            />
+            <Button size="sm" className="h-7 px-2 text-xs" onClick={saveEdit}>
+              Save
+            </Button>
+          </div>
+        </>
       ) : (
         <>
           <div className="flex items-center justify-between gap-2">

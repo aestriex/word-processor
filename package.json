@@ -1,17 +1,21 @@
 {
   "name": "word-processor",
-  "private": true,
+  "private": false,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "predev": "npm run generate-licenses",
     "build": "tsc && vite build",
+    "prebuild": "npm run generate-licenses",
+    "generate-licenses": "node scripts/generate-licenses.mjs",
     "preview": "vite preview",
     "tauri": "tauri"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
     "@fontsource-variable/geist": "^5.3.0",
+    "@lizenz/checker": "^0.0.2",
     "@tailwindcss/vite": "^4.3.3",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "^2.7.3",

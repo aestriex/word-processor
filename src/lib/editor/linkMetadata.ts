@@ -10,7 +10,7 @@ export interface LinkMetadata {
 const metadataCache = new Map<string, LinkMetadata | null>();
 
 export async function fetchLinkMetadata(url: string): Promise<LinkMetadata | null> {
-  const enabled = useConfigStore.getState().config.editor.fetchLinkMetadata;
+  const enabled = useConfigStore.getState().config.privacy.fetchLinkMetadata;
   if (!enabled) return null;
 
   if (metadataCache.has(url)) {

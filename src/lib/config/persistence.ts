@@ -1,6 +1,7 @@
 import { readTextFile, writeTextFile, exists, mkdir } from '@tauri-apps/plugin-fs';
+import { revealItemInDir } from '@tauri-apps/plugin-opener';
 import { appConfigDir, join } from '@tauri-apps/api/path';
-import type { Config } from './schema';
+import { DEFAULT_CONFIG, type Config } from './schema';
 
 const CONFIG_FILENAME = 'config.json';
 
@@ -35,4 +36,27 @@ export async function saveConfigToDisk(config: Config): Promise<void> {
   } catch (err) {
     console.error('Failed to save config to disk:', err);
   }
+}
+
+/**
+ * Opens the OS file manager with config.json highlighted, for the
+ * Settings > About "Configuration File" button. In the extremely narrow
+ * window where a user opens Settings before the very first debounced
+ * save has landed (in practice, the load effect in useConfigPersistence
+ * itself triggers an initial re-save almost immediately, so this is
+ * mostly a defensive fallback), writes DEFAULT_CONFIG once first so
+ * there's actually a real file to reveal rather than failing silently.
+ */
+export async function revealConfigFile(): Promise<void> {
+  const path = await getConfigPath();
+
+  if (!(await exists(path))) {
+    const dir = await appConfigDir();
+    if (!(await exists(dir))) {
+      await mkdir(dir, { recursive: true });
+    }
+    await writeTextFile(path, JSON.stringify(DEFAULT_CONFIG, null, 2));
+  }
+
+  await revealItemInDir(path);
 }
